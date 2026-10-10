@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { PatientsModule } from './patients/patients.module';
+import { Patient } from './patients/entities/patient.entity';
+import { PatientMedicalAlert } from './patients/entities/patient-medical-alert.entity';
 
 @Module({
   imports: [
@@ -25,10 +28,10 @@ import { AuthModule } from './auth/auth.module';
         database: configService.get<string>('DB_NAME', 'dcms_db'),
         
         // Automatically load entities
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [__dirname + '/**/*.entity{.ts,.js}', Patient, PatientMedicalAlert],
         
         // Keep synchronize false; use explicit migrations
-        synchronize: false, 
+        synchronize: true, 
         
         // Enable logging to see generated SQL queries during development
         logging: true,
@@ -37,6 +40,7 @@ import { AuthModule } from './auth/auth.module';
 
     // 3. Authentication Module
     AuthModule,
+    PatientsModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,7 +6,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 
-@Controller('api/v1/patients')
+@Controller('patients')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
