@@ -4,30 +4,38 @@ import { PatientSearchInput } from './PatientSearchInput';
 import { PatientRegistrationForm } from './PatientRegistrationForm';
 import { PatientProfileView } from './PatientProfileView';
 import type { Patient } from '../../services/patient.service';
+import { UserPlus, Users, ShieldCheck } from 'lucide-react';
 
 export const PatientManagementView: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Patient Management & Front Desk</h1>
-          <p className="text-sm text-gray-600">Search records, register walk-ins, and manage patient profiles (TR-PAT-001 through TR-PAT-005).</p>
+    <div className="p-8 max-w-7xl mx-auto space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100 gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
+            <Users size={28} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black text-gray-900">Patient Management & Front Desk</h1>
+            <p className="text-xs text-gray-500 flex items-center gap-1.5 mt-0.5">
+              <ShieldCheck size={14} className="text-emerald-600" /> SRS Compliant (TR-PAT-001 through TR-PAT-005)
+            </p>
+          </div>
         </div>
         {!showRegistrationModal && !selectedPatient && (
           <button
             onClick={() => setShowRegistrationModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm transition"
+            className="flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold shadow-lg shadow-blue-500/20 transition"
           >
-            + Register New Patient
+            <UserPlus size={18} /> Register New Patient
           </button>
         )}
       </div>
 
       {showRegistrationModal ? (
-        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+        <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-200">
           <PatientRegistrationForm
             onSuccess={() => {
               setShowRegistrationModal(false);
@@ -42,11 +50,10 @@ export const PatientManagementView: React.FC = () => {
           onBack={() => setSelectedPatient(null)}
         />
       ) : (
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800 mb-3">Quick Patient Lookup</h2>
-            <PatientSearchInput onSelectPatient={(patient) => setSelectedPatient(patient)} />
-          </div>
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+          <h2 className="text-lg font-bold text-gray-900">Quick Patient Lookup</h2>
+          <p className="text-xs text-gray-500">Search patients in real-time by name, phone number, or unique file number.</p>
+          <PatientSearchInput onSelectPatient={(patient) => setSelectedPatient(patient)} />
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { patientService } from '../../services/patient.service';
 import type { Patient } from '../../services/patient.service';
+import { Search, AlertCircle, User } from 'lucide-react';
 
 interface PatientSearchInputProps {
   onSelectPatient: (patient: Patient) => void;
@@ -29,26 +30,29 @@ export const PatientSearchInput: React.FC<PatientSearchInputProps> = ({ onSelect
   }, [query]);
 
   return (
-    <div className="relative w-full max-w-lg">
+    <div className="relative w-full">
       <div className="relative">
         <input
           type="text"
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm text-sm"
           placeholder="Search by name, phone number, or file number (e.g., DCMS-2026-0001)..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+          <Search size={20} />
         </div>
       </div>
 
-      {loading && <div className="absolute z-10 w-full bg-white shadow-lg mt-1 p-2 text-sm text-gray-500 rounded-lg">Searching...</div>}
+      {loading && (
+        <div className="absolute z-10 w-full bg-white shadow-xl mt-1 p-3 text-sm text-gray-500 rounded-xl border border-gray-100 flex items-center gap-2">
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+          Searching patients...
+        </div>
+      )}
 
       {results.length > 0 && query.trim() !== '' && (
-        <ul className="absolute z-10 w-full bg-white shadow-xl mt-1 border border-gray-200 rounded-lg max-h-60 overflow-y-auto">
+        <ul className="absolute z-10 w-full bg-white shadow-2xl mt-1 border border-gray-200 rounded-xl max-h-72 overflow-y-auto divide-y divide-gray-100">
           {results.map((patient) => (
             <li
               key={patient.id}
@@ -57,15 +61,20 @@ export const PatientSearchInput: React.FC<PatientSearchInputProps> = ({ onSelect
                 setQuery('');
                 setResults([]);
               }}
-              className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 flex justify-between items-center"
+              className="px-4 py-3 hover:bg-blue-50/60 cursor-pointer flex justify-between items-center transition"
             >
-              <div>
-                <p className="font-semibold text-gray-900">{patient.fullName}</p>
-                <p className="text-xs text-gray-500">File: {patient.fileNumber} | Phone: {patient.phoneNumber}</p>
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                  <User size={18} />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">{patient.fullName}</p>
+                  <p className="text-xs text-gray-500">File: <span className="font-medium text-blue-600">{patient.fileNumber}</span> | Phone: {patient.phoneNumber}</p>
+                </div>
               </div>
               {patient.medicalAlerts.length > 0 && (
-                <span className="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded-full font-medium">
-                  {patient.medicalAlerts.length} Alert(s)
+                <span className="flex items-center gap-1 bg-red-100 text-red-800 text-xs px-2.5 py-1 rounded-full font-medium">
+                  <AlertCircle size={13} /> {patient.medicalAlerts.length} Alert(s)
                 </span>
               )}
             </li>

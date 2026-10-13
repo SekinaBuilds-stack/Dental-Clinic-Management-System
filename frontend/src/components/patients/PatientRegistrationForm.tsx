@@ -4,6 +4,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { patientService } from '../../services/patient.service';
+import { UserPlus, X, Plus, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const patientSchema = z.object({
   fullName: z.string().min(2, 'Full name is required'),
@@ -62,25 +63,33 @@ export const PatientRegistrationForm: React.FC<PatientRegistrationFormProps> = (
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 rounded-xl shadow-lg max-h-[90vh] overflow-y-auto">
-      <h2 className="text-xl font-bold text-gray-900 mb-4 border-b pb-2">New Patient Registration</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto border border-gray-100">
+      <div className="flex items-center gap-3 border-b pb-4 mb-6">
+        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+          <UserPlus size={22} />
+        </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Full Name *</label>
-          <input type="text" {...register('fullName')} className="mt-1 w-full p-2 border rounded-lg" />
+          <h2 className="text-xl font-bold text-gray-900">New Patient Registration</h2>
+          <p className="text-xs text-gray-500">Capture demographics, contact details, and medical alerts (TR-PAT-002).</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name *</label>
+          <input type="text" {...register('fullName')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Abebe Bikila" />
           {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Phone Number *</label>
-          <input type="text" {...register('phoneNumber')} className="mt-1 w-full p-2 border rounded-lg" placeholder="+2519..." />
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Phone Number *</label>
+          <input type="text" {...register('phoneNumber')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="+2519..." />
           {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Gender *</label>
-          <select {...register('gender')} className="mt-1 w-full p-2 border rounded-lg">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Gender *</label>
+          <select {...register('gender')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -90,74 +99,87 @@ export const PatientRegistrationForm: React.FC<PatientRegistrationFormProps> = (
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Date of Birth *</label>
-          <input type="date" {...register('dateOfBirth')} className="mt-1 w-full p-2 border rounded-lg" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Date of Birth *</label>
+          <input type="date" {...register('dateOfBirth')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
           {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Email Address</label>
-          <input type="email" {...register('email')} className="mt-1 w-full p-2 border rounded-lg" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+          <input type="email" {...register('email')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="patient@example.com" />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Referral Source</label>
-          <input type="text" {...register('referralSource')} className="mt-1 w-full p-2 border rounded-lg" placeholder="Walk-in, Doctor, Online..." />
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Referral Source</label>
+          <input type="text" {...register('referralSource')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Walk-in, Doctor, Online..." />
         </div>
       </div>
 
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700">Residential Address</label>
-        <textarea {...register('address')} rows={2} className="mt-1 w-full p-2 border rounded-lg" />
+      <div className="mt-5">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">Residential Address</label>
+        <textarea {...register('address')} rows={2} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Street, City, Subcity..." />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Emergency Contact Name</label>
-          <input type="text" {...register('emergencyContactName')} className="mt-1 w-full p-2 border rounded-lg" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Emergency Contact Name</label>
+          <input type="text" {...register('emergencyContactName')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Emergency Contact Phone</label>
-          <input type="text" {...register('emergencyContactPhone')} className="mt-1 w-full p-2 border rounded-lg" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Emergency Contact Phone</label>
+          <input type="text" {...register('emergencyContactPhone')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
         </div>
       </div>
 
-      <div className="mt-4 flex items-center space-x-2">
-        <input type="checkbox" {...register('isPreRegistered')} id="preReg" className="h-4 w-4 text-blue-600 rounded" />
-        <label htmlFor="preReg" className="text-sm font-medium text-gray-700">Mark as Pre-registered (Walk-in / Phone booking)</label>
+      <div className="mt-5 bg-blue-50/50 p-4 rounded-xl border border-blue-100 flex items-center space-x-3">
+        <input type="checkbox" {...register('isPreRegistered')} id="preReg" className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
+        <label htmlFor="preReg" className="text-sm font-medium text-blue-900 cursor-pointer">
+          Mark as Pre-registered (Walk-in or phone booking before full file creation - TR-PAT-001)
+        </label>
       </div>
 
       {/* Medical Alerts Section */}
-      <div className="mt-6 border-t pt-4">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-md font-bold text-gray-800">Medical Alerts & Allergies</h3>
+      <div className="mt-8 border-t pt-6">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-2">
+            <AlertCircle size={18} className="text-red-500" />
+            <h3 className="text-md font-bold text-gray-900">Medical Alerts & Allergies (TR-PAT-003)</h3>
+          </div>
           <button
             type="button"
             onClick={() => append({ alertType: 'Allergy', severity: 'High', description: '' })}
-            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-xs font-semibold rounded-lg"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold rounded-lg transition"
           >
-            + Add Alert
+            <Plus size={14} /> Add Alert
           </button>
         </div>
 
+        {fields.length === 0 && (
+          <p className="text-xs text-gray-400 italic mb-2">No medical alerts added. Click "+ Add Alert" if patient has known allergies or sensitivities.</p>
+        )}
+
         {fields.map((field, index) => (
-          <div key={field.id} className="flex gap-2 items-center mb-2 bg-gray-50 p-3 rounded-lg">
-            <input type="text" placeholder="Type (e.g. Allergy)" {...register(`medicalAlerts.${index}.alertType`)} className="p-2 border rounded w-1/4 text-sm" />
-            <select {...register(`medicalAlerts.${index}.severity`)} className="p-2 border rounded w-1/4 text-sm">
-              <option value="High">High</option>
-              <option value="Moderate">Moderate</option>
-              <option value="Low">Low</option>
+          <div key={field.id} className="flex gap-3 items-center mb-3 bg-red-50/30 p-3.5 rounded-xl border border-red-100">
+            <input type="text" placeholder="Type (e.g. Allergy)" {...register(`medicalAlerts.${index}.alertType`)} className="p-2.5 border border-gray-300 rounded-lg w-1/4 text-sm bg-white" />
+            <select {...register(`medicalAlerts.${index}.severity`)} className="p-2.5 border border-gray-300 rounded-lg w-1/4 text-sm bg-white">
+              <option value="High">High Severity</option>
+              <option value="Moderate">Moderate Severity</option>
+              <option value="Low">Low Severity</option>
             </select>
-            <input type="text" placeholder="Description (e.g. Penicillin)" {...register(`medicalAlerts.${index}.description`)} className="p-2 border rounded w-2/4 text-sm" />
-            <button type="button" onClick={() => remove(index)} className="text-red-500 font-bold px-2">×</button>
+            <input type="text" placeholder="Description (e.g. Penicillin)" {...register(`medicalAlerts.${index}.description`)} className="p-2.5 border border-gray-300 rounded-lg w-2/4 text-sm bg-white" />
+            <button type="button" onClick={() => remove(index)} className="text-red-500 hover:text-red-700 p-1">
+              <X size={18} />
+            </button>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 flex justify-end space-x-3 border-t pt-4">
-        <button type="button" onClick={onCancel} className="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-50">Cancel</button>
-        <button type="submit" disabled={submitting} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
-          {submitting ? 'Saving...' : 'Register Patient'}
+      <div className="mt-8 flex justify-end space-x-3 border-t pt-6">
+        <button type="button" onClick={onCancel} className="px-5 py-2.5 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 text-sm font-semibold transition">
+          Cancel
+        </button>
+        <button type="submit" disabled={submitting} className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 text-sm font-semibold shadow-lg shadow-blue-500/20 transition">
+          <CheckCircle2 size={16} /> {submitting ? 'Saving...' : 'Register Patient'}
         </button>
       </div>
     </form>
