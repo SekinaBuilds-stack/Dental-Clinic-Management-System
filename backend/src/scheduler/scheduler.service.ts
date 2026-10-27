@@ -7,6 +7,7 @@ import { Waitlist } from './entities/waitlist.entity';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentStatusDto } from './dto/update-status.dto';
 import { CreateWaitlistDto } from './dto/create-waitlist.dto';
+import { SchedulerGateway } from './scheduler.gateway'; // <-- Added for WebSockets
 
 @Injectable()
 export class SchedulerService {
@@ -16,6 +17,7 @@ export class SchedulerService {
     @InjectRepository(Waitlist)
     private waitlistRepo: Repository<Waitlist>,
     private dataSource: DataSource,
+    private schedulerGateway: SchedulerGateway, // <-- Injected Gateway
   ) {}
 
   // TR-APT-001: Filter appointments by doctor
@@ -94,6 +96,10 @@ export class SchedulerService {
       const savedAppointment = await queryRunner.manager.save(Appointment, appointment);
 
       await queryRunner.commitTransaction();
+
+      // TR-APT-007: Broadcast real-time appointment creation event via Socket.IO
+      this.schedulerGateway.broadcastAppointmentCreated(savedAppointment);
+
       return savedAppointment;
     } catch (err) {
       await queryRunner.rollbackTransaction();
@@ -111,7 +117,13 @@ export class SchedulerService {
     }
 
     appointment.status = dto.status;
-    return this.appointmentRepo.save(appointment);
+    const updated = await this.appointmentRepo.save(appointment);
+
+    // TR-APT-007: Broadcast real-time status update events via Socket.IO
+    this.schedulerGateway.broadcastAppointmentUpdate(updated);
+    this.schedulerGateway.broadcastChairUpdate({ chairId: updated.chairId, status: updated.status });
+
+    return updated;
   }
 
   // TR-APT-006: Waitlist Management
