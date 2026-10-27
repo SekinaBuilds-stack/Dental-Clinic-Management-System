@@ -1,9 +1,10 @@
 // frontend/src/components/scheduler/DoctorSchedulerView.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, User, Clock, Plus, CheckCircle, AlertCircle, ShieldAlert } from 'lucide-react';
+import { Calendar, User, Clock, Plus, CheckCircle, AlertCircle, ShieldAlert, Radio } from 'lucide-react';
 import { AppointmentBookingModal } from './AppointmentBookingModal';
 import { AppointmentStatusWidget } from './AppointmentStatusWidget';
+import { useSocket } from '../../context/SocketContext'; // <-- Added Socket Context
 
 interface Doctor {
   id: string;
@@ -30,15 +31,23 @@ export const DoctorSchedulerView: React.FC = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [error, setError] = useState('');
 
+  // Real-time socket integration
+  const { socket, isConnected } = useSocket();
+
   // Fetch doctors on mount (mock or API)
   useEffect(() => {
-    // In production, fetch from /api/v1/doctors. Using mock for demo if endpoint pending:
     setDoctors([
       { id: 'doc-uuid-1', fullName: 'Dr. Sarah Jenkins', specialization: 'Orthodontics' },
       { id: 'doc-uuid-2', fullName: 'Dr. Michael Chen', specialization: 'Oral Surgery' },
     ]);
-    if (doctors.length > 0) setSelectedDoctor(doctors[0].id);
   }, []);
+
+  // Set default doctor once doctors list is populated
+  useEffect(() => {
+    if (doctors.length > 0 && !selectedDoctor) {
+      setSelectedDoctor(doctors[0].id);
+    }
+  }, [doctors, selectedDoctor]);
 
   const fetchAppointments = async () => {
     if (!selectedDoctor) return;
@@ -65,16 +74,41 @@ export const DoctorSchedulerView: React.FC = () => {
     }
   }, [selectedDoctor, selectedDate]);
 
+  // TR-APT-007: Listen for real-time WebSocket events to refresh grid instantly
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleRefresh = (data: any) => {
+      console.log('Real-time appointment event received via WebSocket:', data);
+      fetchAppointments();
+    };
+
+    socket.on('appointment:updated', handleRefresh);
+    socket.on('appointment:created', handleRefresh);
+
+    return () => {
+      socket.off('appointment:updated', handleRefresh);
+      socket.off('appointment:created', handleRefresh);
+    };
+  }, [socket, selectedDoctor, selectedDate]);
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header & Controls */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-            <Calendar className="text-blue-600" size={28} /> Doctor Appointment Schedule
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
+              <Calendar className="text-blue-600" size={28} /> Doctor Appointment Schedule
+            </h1>
+            {/* Live WebSocket Status Badge */}
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-full text-xs font-bold">
+              <Radio size={14} className={isConnected ? "animate-pulse text-emerald-600" : "text-gray-400"} />
+              {isConnected ? "Live WebSockets Active" : "Connecting..."}
+            </div>
+          </div>
           <p className="text-xs text-gray-500 mt-1">
-            Manage doctor availability, view active bookings, and initiate time-slot allocations (`TR-APT-001`).
+            Manage doctor availability, view active bookings, and initiate time-slot allocations (`TR-APT-001`)[cite: 3, 18].
           </p>
         </div>
 
