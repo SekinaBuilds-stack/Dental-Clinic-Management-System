@@ -1,3 +1,4 @@
+// backend/src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -5,8 +6,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PatientsModule } from './patients/patients.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
+import { EmrModule } from './emr/emr.module';
 import { Patient } from './patients/entities/patient.entity';
 import { PatientMedicalAlert } from './patients/entities/patient-medical-alert.entity';
+import { Doctor } from './scheduler/entities/doctor.entity';
+import { TreatmentChair } from './scheduler/entities/treatment-chair.entity';
+import { Appointment } from './scheduler/entities/appointment.entity';
+import { Waitlist } from './scheduler/entities/waitlist.entity';
+import { Odontogram } from './emr/entities/odontogram.entity';
+import { TreatmentPlan } from './emr/entities/treatment-plan.entity';
+import { TreatmentPlanItem } from './emr/entities/treatment-plan-item.entity';
+import { ProcedureCatalog } from './emr/entities/procedure-catalog.entity';
+import { ProcedurePrice } from './emr/entities/procedure-price.entity';
 
 @Module({
   imports: [
@@ -27,10 +39,23 @@ import { PatientMedicalAlert } from './patients/entities/patient-medical-alert.e
         password: configService.get<string>('DB_PASSWORD', 'dcms_secure_password'),
         database: configService.get<string>('DB_NAME', 'dcms_db'),
         
-        // Automatically load entities
-        entities: [__dirname + '/**/*.entity{.ts,.js}', Patient, PatientMedicalAlert],
+        // Automatically load all entities
+        entities: [
+          __dirname + '/**/*.entity{.ts,.js}',
+          Patient,
+          PatientMedicalAlert,
+          Doctor,
+          TreatmentChair,
+          Appointment,
+          Waitlist,
+          Odontogram,
+          TreatmentPlan,
+          TreatmentPlanItem,
+          ProcedureCatalog,
+          ProcedurePrice,
+        ],
         
-        // Keep synchronize false; use explicit migrations
+        // Keep synchronize true for development migration automation
         synchronize: true, 
         
         // Enable logging to see generated SQL queries during development
@@ -38,9 +63,11 @@ import { PatientMedicalAlert } from './patients/entities/patient-medical-alert.e
       }),
     }),
 
-    // 3. Authentication Module
+    // 3. Application Feature Modules
     AuthModule,
-    PatientsModule
+    PatientsModule,
+    SchedulerModule,
+    EmrModule,
   ],
   controllers: [AppController],
   providers: [AppService],

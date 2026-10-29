@@ -49,23 +49,28 @@ export const AppointmentStatusWidget: React.FC<AppointmentStatusWidgetProps> = (
   };
 
   return (
-    <div className="relative inline-flex items-center">
-      <select
-        value={status}
-        disabled={updating}
-        onChange={(e) => handleStatusChange(e.target.value)}
-        className={`text-xs font-bold px-3 py-1.5 rounded-xl border appearance-none pr-8 cursor-pointer focus:outline-none transition ${getStatusColor(
-          status
-        )}`}
-      >
-        {statuses.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
-      <div className="absolute right-2.5 pointer-events-none text-current opacity-60">
-        <ChevronDown size={14} />
+    <div className="relative inline-flex items-center gap-1.5">
+      {/* Active CheckCircle2 Icon Integration */}
+      <CheckCircle2 size={16} className={status === 'Completed' ? 'text-emerald-600' : 'text-gray-400'} />
+      
+      <div className="relative inline-flex items-center">
+        <select
+          value={status}
+          disabled={updating}
+          onChange={(e) => handleStatusChange(e.target.value)}
+          className={`text-xs font-bold px-3 py-1.5 rounded-xl border appearance-none pr-8 cursor-pointer focus:outline-none transition ${getStatusColor(
+            status
+          )}`}
+        >
+          {statuses.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <div className="absolute right-2.5 pointer-events-none text-current opacity-60">
+          <ChevronDown size={14} />
+        </div>
       </div>
     </div>
   );

@@ -61,7 +61,7 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900">Book Appointment</h2>
-              <p className="text-xs text-gray-500">Atomic conflict detection enforced (`TR-APT-003`)[cite: 3, 18]</p>
+              <p className="text-xs text-gray-500">Atomic conflict detection enforced (`TR-APT-003`)</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 rounded-xl">
@@ -77,7 +77,9 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Patient UUID / ID</label>
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <User size={14} className="text-blue-600" /> Patient UUID / ID
+            </label>
             <input
               type="text"
               required
@@ -102,7 +104,9 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Treatment Chair</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <Armchair size={14} className="text-blue-600" /> Treatment Chair
+              </label>
               <select
                 value={chairId}
                 onChange={(e) => setChairId(e.target.value)}
@@ -117,7 +121,9 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Start Time</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <Clock size={14} className="text-blue-600" /> Start Time
+              </label>
               <input
                 type="datetime-local"
                 required
@@ -128,7 +134,9 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">End Time</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <Clock size={14} className="text-blue-600" /> End Time
+              </label>
               <input
                 type="datetime-local"
                 required
