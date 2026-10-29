@@ -1,7 +1,7 @@
 // frontend/src/components/scheduler/ChairSchedulerView.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Armchair, Calendar, Clock, ShieldAlert } from 'lucide-react';
+import { Armchair, Clock, ShieldAlert } from 'lucide-react';
 import { AppointmentStatusWidget } from './AppointmentStatusWidget';
 
 interface TreatmentChair {

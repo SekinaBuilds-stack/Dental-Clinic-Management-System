@@ -1,10 +1,10 @@
 // frontend/src/components/scheduler/DoctorSchedulerView.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, User, Clock, Plus, CheckCircle, AlertCircle, ShieldAlert, Radio } from 'lucide-react';
+import { Calendar, Clock, Plus, ShieldAlert, Radio, User, CheckCircle, AlertCircle } from 'lucide-react';
 import { AppointmentBookingModal } from './AppointmentBookingModal';
 import { AppointmentStatusWidget } from './AppointmentStatusWidget';
-import { useSocket } from '../../context/SocketContext'; // <-- Added Socket Context
+import { useSocket } from '../../context/SocketContext';
 
 interface Doctor {
   id: string;
@@ -108,7 +108,7 @@ export const DoctorSchedulerView: React.FC = () => {
             </div>
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            Manage doctor availability, view active bookings, and initiate time-slot allocations (`TR-APT-001`)[cite: 3, 18].
+            Manage doctor availability, view active bookings, and initiate time-slot allocations (`TR-APT-001`).
           </p>
         </div>
 
@@ -173,14 +173,24 @@ export const DoctorSchedulerView: React.FC = () => {
               <div key={apt.id} className="p-4 flex items-center justify-between hover:bg-gray-50/50 transition">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-gray-900">
+                    {/* Status Icon Indicator */}
+                    {apt.status === 'COMPLETED' || apt.status === 'CONFIRMED' ? (
+                      <CheckCircle size={18} className="text-emerald-600" />
+                    ) : (
+                      <AlertCircle size={18} className="text-amber-500" />
+                    )}
+
+                    {/* Patient Name with User Icon */}
+                    <span className="font-bold text-gray-900 flex items-center gap-1.5">
+                      <User size={14} className="text-gray-400" />
                       {apt.patient?.firstName} {apt.patient?.lastName}
                     </span>
+
                     <span className="text-xs font-mono bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md">
                       File #{apt.patient?.fileNumber}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-500 flex items-center gap-4">
+                  <div className="text-xs text-gray-500 flex items-center gap-4 pl-7">
                     <span className="flex items-center gap-1 font-medium text-gray-700">
                       <Clock size={13} className="text-blue-600" />
                       {new Date(apt.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
@@ -188,7 +198,7 @@ export const DoctorSchedulerView: React.FC = () => {
                     </span>
                     <span>Chair: <strong className="text-gray-800">{apt.chair?.name || 'Assigned Chair'}</strong></span>
                   </div>
-                  {apt.notes && <p className="text-xs text-gray-600 italic mt-1">Note: {apt.notes}</p>}
+                  {apt.notes && <p className="text-xs text-gray-600 italic mt-1 pl-7">Note: {apt.notes}</p>}
                 </div>
 
                 <div className="flex items-center gap-3">
