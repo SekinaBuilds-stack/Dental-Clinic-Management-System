@@ -9,7 +9,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)
-@Controller('api/v1/appointments')
+@Controller('appointments')
 export class SchedulerController {
   constructor(private readonly schedulerService: SchedulerService) {}
 

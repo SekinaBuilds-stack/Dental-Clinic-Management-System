@@ -8,6 +8,7 @@ import { TreatmentPlan } from './entities/treatment-plan.entity';
 import { TreatmentPlanItem } from './entities/treatment-plan-item.entity';
 import { ProcedureCatalog } from './entities/procedure-catalog.entity';
 import { ProcedurePrice } from './entities/procedure-price.entity';
+import { StorageModule } from '../storage/storage.module'; // <-- Added StorageModule import
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProcedurePrice } from './entities/procedure-price.entity';
       ProcedureCatalog,
       ProcedurePrice,
     ]),
+    StorageModule, // <-- Included in imports
   ],
   controllers: [EmrController],
   providers: [EmrService],

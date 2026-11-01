@@ -14,11 +14,13 @@
     "sourceMap": true,
     "outDir": "./dist",
     "incremental": true,
-
+    "rootDir": "./src",
     "skipLibCheck": true,
     "strict": true,
     "strictPropertyInitialization": false,
 
     "types": ["vitest/globals", "node"]
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test"]
 }
