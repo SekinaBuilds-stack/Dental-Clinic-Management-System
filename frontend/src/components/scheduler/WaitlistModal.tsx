@@ -1,7 +1,7 @@
 // frontend/src/components/scheduler/WaitlistModal.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Users, Plus, X, Calendar, ShieldAlert } from 'lucide-react';
+import { Users, Plus, X } from 'lucide-react';
 
 interface WaitlistEntry {
   id: string;
