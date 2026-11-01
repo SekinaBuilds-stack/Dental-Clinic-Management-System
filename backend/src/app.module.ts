@@ -4,10 +4,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+// Feature & Utility Modules
 import { AuthModule } from './auth/auth.module';
 import { PatientsModule } from './patients/patients.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { EmrModule } from './emr/emr.module';
+import { BillingModule } from './billing/billing.module';
+import { PaymentsModule } from './payments/payments.module';
+import { StorageModule } from './storage/storage.module';
+
+// Entities
 import { Patient } from './patients/entities/patient.entity';
 import { PatientMedicalAlert } from './patients/entities/patient-medical-alert.entity';
 import { Doctor } from './scheduler/entities/doctor.entity';
@@ -19,15 +26,21 @@ import { TreatmentPlan } from './emr/entities/treatment-plan.entity';
 import { TreatmentPlanItem } from './emr/entities/treatment-plan-item.entity';
 import { ProcedureCatalog } from './emr/entities/procedure-catalog.entity';
 import { ProcedurePrice } from './emr/entities/procedure-price.entity';
+import { Bill } from './billing/entities/bill.entity';
+import { DayBook } from './billing/entities/day-book.entity';
+import { Estimate } from './billing/entities/estimate.entity';
+import { Payment, PaymentReversal } from './payments/entities/payment.entity';
+import { InsuranceClaim } from './payments/entities/insurance-claim.entity';
+import { PaymentPlan } from './payments/entities/payment-plan.entity';
 
 @Module({
   imports: [
-    // 1. Load environment variables globally from backend/.env
+    // 1. Global Configuration
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // 2. Configure TypeORM asynchronously using ConfigService
+    // 2. Asynchronous TypeORM Configuration
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -39,7 +52,6 @@ import { ProcedurePrice } from './emr/entities/procedure-price.entity';
         password: configService.get<string>('DB_PASSWORD', 'dcms_secure_password'),
         database: configService.get<string>('DB_NAME', 'dcms_db'),
         
-        // Automatically load all entities
         entities: [
           __dirname + '/**/*.entity{.ts,.js}',
           Patient,
@@ -53,21 +65,28 @@ import { ProcedurePrice } from './emr/entities/procedure-price.entity';
           TreatmentPlanItem,
           ProcedureCatalog,
           ProcedurePrice,
+          Bill,
+          DayBook,
+          Estimate,
+          Payment,
+          PaymentReversal,
+          InsuranceClaim,
+          PaymentPlan,
         ],
         
-        // Keep synchronize true for development migration automation
         synchronize: true, 
-        
-        // Enable logging to see generated SQL queries during development
         logging: true,
       }),
     }),
 
-    // 3. Application Feature Modules
+    // 3. Registered Application Modules matching your folder structure
     AuthModule,
     PatientsModule,
     SchedulerModule,
     EmrModule,
+    BillingModule,
+    PaymentsModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
