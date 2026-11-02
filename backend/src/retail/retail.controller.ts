@@ -5,6 +5,7 @@ import { CreateRetailReturnDto } from './dto/create-retail-return.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
+import { Request } from 'express';
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 @Controller('retail-sales')
@@ -25,15 +26,21 @@ export class RetailController {
 
   @Post()
   @RequirePermissions('retail:manage')
-  async createSale(@Body() dto: CreateRetailSaleDto, @Req() req) {
+  async createSale(
+    @Body() dto: CreateRetailSaleDto,
+    @Req() req: Request & { user: { userId: number } },
+  ) {
     const cashierId = req.user.userId;
-    return this.retailService.createSale(dto, cashierId);
+    return this.retailService.createSale(dto, String(cashierId));
   }
 
   @Post('returns')
   @RequirePermissions('retail:return')
-  async processReturn(@Body() dto: CreateRetailReturnDto, @Req() req) {
+  async processReturn(
+    @Body() dto: CreateRetailReturnDto,
+    @Req() req: Request & { user: { userId: number } },
+  ) {
     const managerId = req.user.userId;
-    return this.retailService.processReturn(dto, managerId);
+    return this.retailService.processReturn(dto, String(managerId));
   }
 }

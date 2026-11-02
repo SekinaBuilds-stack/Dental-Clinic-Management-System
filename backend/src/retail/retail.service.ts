@@ -92,7 +92,7 @@ export class RetailService {
 
       const sale = queryRunner.manager.create(RetailSale, {
         receiptNumber: `REC-${Date.now()}`,
-        patientId: dto.patientId || null,
+        patientId: dto.patientId || undefined,
         cashierId,
         subtotal,
         taxAmount,
@@ -139,6 +139,7 @@ export class RetailService {
         where: { id: dto.retailProductId },
         relations: ['inventoryItem'],
       });
+      if (!retailProduct) throw new NotFoundException('Retail product not found');
 
       const inventoryItem = retailProduct.inventoryItem;
       inventoryItem.currentStock += dto.returnQuantity;

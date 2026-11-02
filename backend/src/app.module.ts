@@ -13,7 +13,8 @@ import { EmrModule } from './emr/emr.module';
 import { BillingModule } from './billing/billing.module';
 import { PaymentsModule } from './payments/payments.module';
 import { StorageModule } from './storage/storage.module';
-
+import { InventoryModule } from './inventory/inventory.module';
+import { RetailModule } from './retail/retail.module';
 // Entities
 import { Patient } from './patients/entities/patient.entity';
 import { PatientMedicalAlert } from './patients/entities/patient-medical-alert.entity';
