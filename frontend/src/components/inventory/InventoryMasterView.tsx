@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Plus, FileText, ShieldAlert, Layers } from 'lucide-react';
+import { Plus, ShieldAlert } from 'lucide-react';
 
 interface InventoryItem {
   id: string;
