@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { AlertTriangle, ShieldCheck } from 'lucide-react';
 
 interface StockBatch {
   id: string;

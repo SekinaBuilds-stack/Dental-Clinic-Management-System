@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Layers, ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowDownRight } from 'lucide-react';
 
 interface StockMovement {
   id: string;
