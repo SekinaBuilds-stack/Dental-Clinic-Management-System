@@ -72,7 +72,7 @@ export class ProcurementService {
       const movement = queryRunner.manager.create(StockMovement, {
         inventoryItemId: dto.inventoryItemId,
         quantity: -dto.quantityConsumed,
-        movementType: MovementType.USAGE,
+        movementType: MovementType.CONSUMPTION,
         reference: `Chairside Treatment: ${dto.treatmentId}`,
         userId,
       });
@@ -108,6 +108,7 @@ export class ProcurementService {
       await queryRunner.manager.save(adj);
 
       const item = await queryRunner.manager.findOne(InventoryItem, { where: { id: adj.inventoryItemId } });
+      if (!item) throw new NotFoundException('Inventory item not found');
       item.currentStock += adj.adjustmentQuantity;
       await queryRunner.manager.save(item);
 

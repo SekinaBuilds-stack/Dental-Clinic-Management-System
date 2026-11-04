@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, CheckCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface Requisition {
   id: string;
