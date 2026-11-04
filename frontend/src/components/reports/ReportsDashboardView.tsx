@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BarChart3, DollarSign, Users, Activity, Clock, FileSpreadsheet } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BarChart3, DollarSign, Users, Activity, Clock } from 'lucide-react';
 
 export function ReportsDashboardView() {
   const [collections, setCollections] = useState<any>(null);
