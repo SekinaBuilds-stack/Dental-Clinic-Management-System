@@ -17,7 +17,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { RetailModule } from './retail/retail.module';
 import { ProcurementModule } from './procurement/procurement.module';
 import { ReportsModule } from './reports/reports.module';
-
+import { NotificationsModule } from './notifications/notifications.module';
 // Entities
 import { Patient } from './patients/entities/patient.entity';
 import { PatientMedicalAlert } from './patients/entities/patient-medical-alert.entity';
@@ -36,7 +36,6 @@ import { Estimate } from './billing/entities/estimate.entity';
 import { Payment, PaymentReversal } from './payments/entities/payment.entity';
 import { InsuranceClaim } from './payments/entities/insurance-claim.entity';
 import { PaymentPlan } from './payments/entities/payment-plan.entity';
-import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
