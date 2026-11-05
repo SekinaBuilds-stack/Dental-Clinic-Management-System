@@ -36,6 +36,7 @@ import { Estimate } from './billing/entities/estimate.entity';
 import { Payment, PaymentReversal } from './payments/entities/payment.entity';
 import { InsuranceClaim } from './payments/entities/insurance-claim.entity';
 import { PaymentPlan } from './payments/entities/payment-plan.entity';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -95,6 +96,7 @@ import { PaymentPlan } from './payments/entities/payment-plan.entity';
     ReportsModule,
     InventoryModule,
     RetailModule,
+    NotificationsModule, // <-- Ensure this module is imported
   ],
   controllers: [AppController],
   providers: [AppService],
