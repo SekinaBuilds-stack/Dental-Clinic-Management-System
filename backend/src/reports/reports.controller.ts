@@ -3,7 +3,7 @@ import { ReportsService } from './reports.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 
-@Controller('api/v1/reports')
+@Controller('reports')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}

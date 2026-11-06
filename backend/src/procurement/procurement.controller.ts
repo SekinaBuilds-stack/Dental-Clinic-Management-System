@@ -3,7 +3,7 @@ import { ProcurementService } from './procurement.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 
-@Controller('api/v1/procurement')
+@Controller('procurement')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class ProcurementController {
   constructor(private readonly procurementService: ProcurementService) {}
