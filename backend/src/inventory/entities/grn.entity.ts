@@ -6,17 +6,17 @@ export class Grn {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   grnNumber: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   supplierId: string;
 
   @ManyToOne(() => Supplier, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'supplierId' })
   supplier: Supplier;
 
-  @Column()
+  @Column({ type: 'varchar' })
   receivedByUserId: string;
 
   @Column({ type: 'text', nullable: true })

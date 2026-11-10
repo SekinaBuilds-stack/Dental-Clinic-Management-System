@@ -6,14 +6,14 @@ export class StockBatch {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   inventoryItemId: string;
 
   @ManyToOne(() => InventoryItem, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'inventoryItemId' })
   inventoryItem: InventoryItem;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   batchNumber: string;
 
   @Column({ type: 'int' })

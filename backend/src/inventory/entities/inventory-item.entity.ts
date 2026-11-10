@@ -5,13 +5,13 @@ export class InventoryItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   sku: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   name: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   category: string; // CONSUMABLE, EQUIPMENT, RETAIL
 
   @Column({ type: 'int', default: 0 })
@@ -20,7 +20,7 @@ export class InventoryItem {
   @Column({ type: 'int', default: 5 })
   minStockLevel: number;
 
-  @Column({ default: 'pcs' })
+  @Column({ type: 'varchar', default: 'pcs' })
   unit: string;
 
   @CreateDateColumn()

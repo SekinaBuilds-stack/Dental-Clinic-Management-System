@@ -18,7 +18,7 @@ export class StockMovement {
   @JoinColumn({ name: 'inventoryItemId' })
   inventoryItem: InventoryItem;
 
-  @Column()
+  @Column({ type: 'varchar' })
   inventoryItemId: string;
 
   @Column({ type: 'int' })
@@ -30,10 +30,10 @@ export class StockMovement {
   })
   movementType: MovementType;
 
-  @Column()
+  @Column({ type: 'varchar' })
   reference: string; // e.g., POS-SALE-123
 
-  @Column()
+  @Column({ type: 'varchar' })
   userId: string;
 
   @CreateDateColumn()
