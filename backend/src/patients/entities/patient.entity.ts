@@ -7,39 +7,39 @@ export class Patient {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   @Index()
   fileNumber: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   fullName: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   gender: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   dateOfBirth: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   @Index()
   phoneNumber: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   address: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   emergencyContactName: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   emergencyContactPhone: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   referralSource: string;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   isPreRegistered: boolean; // Supports TR-PAT-001 pre-registration workflow
 
   @OneToMany(() => PatientMedicalAlert, (alert) => alert.patient, { cascade: true })
