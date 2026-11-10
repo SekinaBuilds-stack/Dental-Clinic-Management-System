@@ -7,13 +7,13 @@ export class PatientMedicalAlert {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   alertType: string; // e.g., 'Allergy', 'Anesthesia Sensitivity', 'Condition'
 
-  @Column()
+  @Column({ type: 'varchar' })
   severity: string; // e.g., 'High', 'Moderate', 'Low'
 
-  @Column()
+  @Column({ type: 'varchar' })
   description: string; // e.g., 'Penicillin allergy', 'Latex sensitivity'
 
   @ManyToOne(() => Patient, (patient) => patient.medicalAlerts, { onDelete: 'CASCADE' })

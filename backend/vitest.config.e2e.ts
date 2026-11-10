@@ -1,11 +1,14 @@
 import { defineConfig } from 'vitest/config';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig({
-  plugins: [tsconfigPaths()],
-  test: {
-    globals: true,
-    root: './',
-    include: ['**/*.e2e-spec.ts'],
-  },
+export default defineConfig(async () => {
+  const tsconfigPaths = (await import('vite-tsconfig-paths')).default;
+
+  return {
+    plugins: [tsconfigPaths()],
+    test: {
+      globals: true,
+      environment: 'node',
+      include: ['test/**/*.e2e-spec.ts'],
+    },
+  };
 });
