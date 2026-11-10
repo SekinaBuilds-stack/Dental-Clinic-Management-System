@@ -12,10 +12,10 @@ export class PurchaseRequisition {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   requisitionNumber: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   inventoryItemId: string;
 
   @Column({ type: 'int' })
@@ -24,7 +24,7 @@ export class PurchaseRequisition {
   @Column({ type: 'enum', enum: RequisitionStatus, default: RequisitionStatus.PENDING })
   status: RequisitionStatus;
 
-  @Column()
+  @Column({ type: 'varchar' })
   requestedByUserId: string;
 
   @CreateDateColumn()

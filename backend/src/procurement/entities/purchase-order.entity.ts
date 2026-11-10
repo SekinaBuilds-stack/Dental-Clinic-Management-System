@@ -6,17 +6,17 @@ export class PurchaseOrder {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   poNumber: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   supplierId: string;
 
   @ManyToOne(() => Supplier, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'supplierId' })
   supplier: Supplier;
 
-  @Column()
+  @Column({ type: 'varchar' })
   inventoryItemId: string;
 
   @Column({ type: 'int' })
@@ -25,7 +25,7 @@ export class PurchaseOrder {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalCost: number;
 
-  @Column({ default: 'ISSUED' })
+  @Column({ type: 'varchar', default: 'ISSUED' })
   status: string; // ISSUED, DELIVERED, CANCELLED
 
   @CreateDateColumn()

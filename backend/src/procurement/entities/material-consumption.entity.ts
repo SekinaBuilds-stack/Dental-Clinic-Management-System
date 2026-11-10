@@ -5,16 +5,16 @@ export class MaterialConsumption {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   treatmentId: string; // Linked to dental treatment/procedure
 
-  @Column()
+  @Column({ type: 'varchar' })
   inventoryItemId: string;
 
   @Column({ type: 'int' })
   quantityConsumed: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   consumedByUserId: string;
 
   @CreateDateColumn()

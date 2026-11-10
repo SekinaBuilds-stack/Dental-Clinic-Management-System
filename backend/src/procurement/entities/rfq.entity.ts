@@ -7,14 +7,14 @@ export class Rfq {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   requisitionId: string;
 
   @ManyToOne(() => PurchaseRequisition, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'requisitionId' })
   requisition: PurchaseRequisition;
 
-  @Column()
+  @Column({ type: 'varchar' })
   supplierId: string;
 
   @ManyToOne(() => Supplier, { onDelete: 'RESTRICT' })
@@ -24,7 +24,7 @@ export class Rfq {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   quotedPrice: number;
 
-  @Column({ default: 'SENT' })
+  @Column({ type: 'varchar', default: 'SENT' })
   status: string; // SENT, RECEIVED, ACCEPTED
 
   @CreateDateColumn()

@@ -11,22 +11,22 @@ export class StockAdjustment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   inventoryItemId: string;
 
   @Column({ type: 'int' })
   adjustmentQuantity: number; // Positive or negative
 
-  @Column()
+  @Column({ type: 'varchar' })
   reasonCode: string; // e.g., DAMAGED, EXPIRED, COUNT_DISCREPANCY
 
   @Column({ type: 'enum', enum: AdjustmentStatus, default: AdjustmentStatus.PENDING })
   status: AdjustmentStatus;
 
-  @Column()
+  @Column({ type: 'varchar' })
   requestedByUserId: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   approvedByUserId: string;
 
   @CreateDateColumn()
