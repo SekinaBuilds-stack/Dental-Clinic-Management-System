@@ -1,4 +1,3 @@
-// backend/src/billing/entities/day-book.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('day_books')
@@ -9,19 +8,19 @@ export class DayBook {
   @Column({ type: 'date' })
   transactionDate: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   referenceId: string; // Bill ID or Receipt ID
 
-  @Column()
+  @Column({ type: 'varchar' })
   transactionType: string; // PAYMENT, REFUND, EXPENSE
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   paymentMethod: string; // CASH, CARD, MOBILE_MONEY, INSURANCE
 
-  @Column()
+  @Column({ type: 'varchar' })
   recordedBy: string; // User ID
 
   @CreateDateColumn()

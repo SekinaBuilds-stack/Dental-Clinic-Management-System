@@ -1,4 +1,3 @@
-// backend/src/billing/entities/estimate.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('estimates')
@@ -6,16 +5,16 @@ export class Estimate {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   patientId: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   treatmentPlanId: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   totalEstimate: number;
 
-  @Column({ default: 'CURRENT' })
+  @Column({ type: 'varchar', default: 'CURRENT' })
   status: string; // CURRENT, REVISED, SUPERSEDED, CONVERTED
 
   @Column({ type: 'jsonb' })

@@ -1,4 +1,3 @@
-// backend/src/billing/entities/bill.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('bills')
@@ -6,7 +5,7 @@ export class Bill {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   patientId: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -15,7 +14,7 @@ export class Bill {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   paidAmount: number;
 
-  @Column({ default: 'UNPAID' })
+  @Column({ type: 'varchar', default: 'UNPAID' })
   status: string; // UNPAID, PARTIAL, PAID, CANCELLED
 
   @OneToMany(() => BillItem, (item) => item.bill, { cascade: true })
@@ -36,7 +35,7 @@ export class BillItem {
   @ManyToOne(() => Bill, (bill) => bill.items, { onDelete: 'CASCADE' })
   bill: Bill;
 
-  @Column()
+  @Column({ type: 'varchar' })
   description: string;
 
   @Column({ type: 'int', default: 1 })
