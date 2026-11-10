@@ -11,13 +11,13 @@ export class RetailSale {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   receiptNumber: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   patientId: string; // Optional link if sold to a registered patient
 
-  @Column()
+  @Column({ type: 'varchar' })
   cashierId: string;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
@@ -29,7 +29,7 @@ export class RetailSale {
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   totalAmount: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   paymentMethod: string; // CASH, CARD, MOBILE_MONEY
 
   @Column({
@@ -58,13 +58,13 @@ export class RetailSaleItem {
   @JoinColumn({ name: 'retailSaleId' })
   retailSale: RetailSale;
 
-  @Column()
+  @Column({ type: 'varchar' })
   retailSaleId: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   retailProductId: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   productName: string;
 
   @Column({ type: 'int' })

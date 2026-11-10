@@ -10,10 +10,10 @@ export class RetailReturn {
   @JoinColumn({ name: 'retailSaleId' })
   retailSale: RetailSale;
 
-  @Column()
+  @Column({ type: 'varchar' })
   retailSaleId: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   retailProductId: string;
 
   @Column({ type: 'int' })
@@ -22,10 +22,10 @@ export class RetailReturn {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   refundAmount: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   reason: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   approvedByUserId: string; // Manager authorization ID
 
   @CreateDateColumn()
