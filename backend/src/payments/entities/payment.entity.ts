@@ -1,4 +1,3 @@
-// backend/src/payments/entities/payment.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import { Bill } from '../../billing/entities/bill.entity';
 
@@ -7,7 +6,7 @@ export class Payment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   billId: string;
 
   @ManyToOne(() => Bill, { onDelete: 'CASCADE' })
@@ -16,32 +15,14 @@ export class Payment {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   paymentMethod: string; // CASH, CARD, MOBILE_MONEY, INSURANCE
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   transactionReference: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   receivedBy: string; // Cashier User ID
-
-  @CreateDateColumn()
-  createdAt: Date;
-}
-
-@Entity('payment_reversals')
-export class PaymentReversal {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column()
-  paymentId: string;
-
-  @Column()
-  reason: string;
-
-  @Column()
-  approvedBy: string; // Manager User ID
 
   @CreateDateColumn()
   createdAt: Date;

@@ -10,16 +10,16 @@ export class PaymentReversal {
   @JoinColumn({ name: 'paymentId' })
   payment: Payment;
 
-  @Column()
+  @Column({ type: 'varchar' })
   paymentId: string;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   amount: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   reason: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   approvedByUserId: string;
 
   @CreateDateColumn()

@@ -33,7 +33,8 @@ import { ProcedurePrice } from './emr/entities/procedure-price.entity';
 import { Bill } from './billing/entities/bill.entity';
 import { DayBook } from './billing/entities/day-book.entity';
 import { Estimate } from './billing/entities/estimate.entity';
-import { Payment, PaymentReversal } from './payments/entities/payment.entity';
+import { Payment } from './payments/entities/payment.entity';
+import { PaymentReversal } from './payments/entities/payment-reversal.entity';
 import { InsuranceClaim } from './payments/entities/insurance-claim.entity';
 import { PaymentPlan } from './payments/entities/payment-plan.entity';
 

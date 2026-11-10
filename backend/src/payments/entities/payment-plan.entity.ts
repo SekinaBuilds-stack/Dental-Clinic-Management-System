@@ -1,4 +1,3 @@
-// backend/src/payments/entities/payment-plan.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('payment_plans')
@@ -6,10 +5,10 @@ export class PaymentPlan {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   patientId: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   billId: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -21,7 +20,7 @@ export class PaymentPlan {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   installmentAmount: number;
 
-  @Column({ default: 'ACTIVE' })
+  @Column({ type: 'varchar', default: 'ACTIVE' })
   status: string; // ACTIVE, COMPLETED, DEFAULTED
 
   @CreateDateColumn()

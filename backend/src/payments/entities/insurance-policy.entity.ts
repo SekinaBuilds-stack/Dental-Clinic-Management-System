@@ -5,13 +5,13 @@ export class InsurancePolicy {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   providerName: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', unique: true })
   policyNumber: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   patientId: string;
 
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 80.0 })

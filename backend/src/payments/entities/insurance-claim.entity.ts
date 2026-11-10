@@ -1,4 +1,3 @@
-// backend/src/payments/entities/insurance-claim.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('insurance_claims')
@@ -6,13 +5,13 @@ export class InsuranceClaim {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   patientId: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   insuranceProvider: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   policyNumber: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -21,7 +20,7 @@ export class InsuranceClaim {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   copayAmount: number;
 
-  @Column({ default: 'SUBMITTED' })
+  @Column({ type: 'varchar', default: 'SUBMITTED' })
   status: string; // SUBMITTED, APPROVED, REJECTED, PAID
 
   @CreateDateColumn()
