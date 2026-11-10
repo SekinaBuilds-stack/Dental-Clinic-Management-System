@@ -1,4 +1,3 @@
-// backend/src/emr/entities/treatment-plan.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Patient } from '../../patients/entities/patient.entity';
 import { TreatmentPlanItem } from './treatment-plan-item.entity';
@@ -16,14 +15,14 @@ export class TreatmentPlan {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   patientId: string;
 
   @ManyToOne(() => Patient, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'patientId' })
   patient: Patient;
 
-  @Column({ length: 150 })
+  @Column({ type: 'varchar', length: 150 })
   title: string; // e.g., "Full Mouth Restoration"
 
   @Column({
@@ -36,7 +35,7 @@ export class TreatmentPlan {
   @OneToMany(() => TreatmentPlanItem, (item) => item.treatmentPlan, { cascade: true })
   items: TreatmentPlanItem[];
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   isAccepted: boolean; // Digital patient consent flag
 
   @CreateDateColumn()
