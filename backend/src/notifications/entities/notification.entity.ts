@@ -15,16 +15,16 @@ export class Notification {
   @Column({ type: 'enum', enum: NotificationType })
   type: NotificationType;
 
-  @Column()
+  @Column({ type: 'varchar' })
   title: string;
 
-  @Column('text')
+  @Column({ type: 'text' })
   message: string;
 
-  @Column({ default: false })
+  @Column({ type: 'boolean', default: false })
   isRead: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   recipientId: string; // User ID or Patient ID
 
   @CreateDateColumn()
