@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
 import { ProcedureCatalog } from './procedure-catalog.entity';
 
 @Entity('procedure_prices')
@@ -18,4 +18,11 @@ export class ProcedurePrice {
 
   @Column({ type: 'varchar', length: 50, default: 'Standard' })
   tier: string;
+
+  // Tooth-specific pricing, if applicable
+  @Column({ type: 'int', nullable: true })
+  toothNumber: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

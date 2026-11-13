@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@swc/core": "^1.16.22",
+    "unplugin-swc": "^2.0.0"
+  }
+}

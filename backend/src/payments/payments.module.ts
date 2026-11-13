@@ -9,6 +9,7 @@ import { InsuranceClaim } from './entities/insurance-claim.entity';
 import { InsurancePolicy } from './entities/insurance-policy.entity';
 import { PaymentPlan } from './entities/payment-plan.entity';
 import { Bill } from '../billing/entities/bill.entity';
+import { DayBook } from '../billing/entities/day-book.entity'; 
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { Bill } from '../billing/entities/bill.entity';
       InsurancePolicy,
       PaymentPlan,
       Bill,
+      DayBook,
     ]),
   ],
   controllers: [PaymentsController],

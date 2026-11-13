@@ -2,7 +2,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, IsNull } from 'typeorm';
-import { ProcedurePrice } from './entities/procedure-price.entity';
+import { ProcedurePrice } from '../emr/entities/procedure-price.entity';
 import { Bill, BillItem } from './entities/bill.entity';
 import { Estimate } from './entities/estimate.entity';
 import { DayBook } from './entities/day-book.entity';
@@ -30,7 +30,7 @@ export class BillingService {
       where: { procedureId: dto.procedureId, toothNumber: dto.toothNumber ?? IsNull() },
     });
     if (existing) {
-      existing.price = dto.price;
+      Object.assign(existing, { price: dto.price });
       return this.priceRepo.save(existing);
     }
     const newPrice = this.priceRepo.create(dto);

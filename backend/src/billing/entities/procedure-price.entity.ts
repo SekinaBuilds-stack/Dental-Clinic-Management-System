@@ -4,7 +4,7 @@ import { ProcedureCatalog } from '../../emr/entities/procedure-catalog.entity';
 @Entity('procedure_prices')
 export class ProcedurePrice {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ type: 'varchar' })
   procedureId: string;

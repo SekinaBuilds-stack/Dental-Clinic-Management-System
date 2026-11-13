@@ -1,14 +1,15 @@
+import 'dotenv/config';
+import swc from 'unplugin-swc';
 import { defineConfig } from 'vitest/config';
 
-export default defineConfig(async () => {
-  const tsconfigPaths = (await import('vite-tsconfig-paths')).default;
-
-  return {
-    plugins: [tsconfigPaths()],
-    test: {
-      globals: true,
-      environment: 'node',
-      include: ['test/**/*.e2e-spec.ts'],
-    },
-  };
+export default defineConfig({
+  test: {
+    globals: true,
+    root: './',
+    include: ['test/**/*.e2e-spec.ts'],
+    testTimeout: 30000,
+    hookTimeout: 30000,
+    fileParallelism: false,
+  },
+  plugins: [swc.vite({ module: { type: 'es6' } })],
 });

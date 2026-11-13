@@ -49,38 +49,16 @@ import { PaymentPlan } from './payments/entities/payment-plan.entity';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+           useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 5432),
+        port: parseInt(configService.get<string>('DB_PORT', '5432'), 10),
         username: configService.get<string>('DB_USER', 'dcms_user'),
         password: configService.get<string>('DB_PASSWORD', 'dcms_secure_password'),
         database: configService.get<string>('DB_NAME', 'dcms_db'),
-        
-        entities: [
-          __dirname + '/**/*.entity{.ts,.js}',
-          Patient,
-          PatientMedicalAlert,
-          Doctor,
-          TreatmentChair,
-          Appointment,
-          Waitlist,
-          Odontogram,
-          TreatmentPlan,
-          TreatmentPlanItem,
-          ProcedureCatalog,
-          ProcedurePrice,
-          Bill,
-          DayBook,
-          Estimate,
-          Payment,
-          PaymentReversal,
-          InsuranceClaim,
-          PaymentPlan,
-        ],
-        
-        synchronize: true, 
-        logging: true,
+        autoLoadEntities: true,
+        synchronize: true,
+        logging: false,
       }),
     }),
 
