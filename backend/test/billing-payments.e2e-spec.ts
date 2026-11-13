@@ -12,9 +12,10 @@ describe('Billing & Payments Controllers (E2E - FR-BIL / FR-PAY)', () => {
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
-    await app.init();
+   app = moduleFixture.createNestApplication();
+app.setGlobalPrefix('api/v1');                 // <-- add this line
+app.useGlobalPipes(new ValidationPipe());
+await app.init();
 
     const loginRes = await request(app.getHttpServer())
       .post('/api/v1/auth/login')

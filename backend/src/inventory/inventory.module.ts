@@ -7,7 +7,7 @@ import { StockBatch } from './entities/stock-batch.entity';
 import { Supplier } from './entities/supplier.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([InventoryItem, StockMovement])],
+ imports: [TypeOrmModule.forFeature([InventoryItem, StockMovement, Grn, StockBatch, Supplier])],
   exports: [TypeOrmModule],
 })
 export class InventoryModule {}

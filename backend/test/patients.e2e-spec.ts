@@ -12,9 +12,10 @@ describe('PatientsController (E2E - FR-PAT)', () => {
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
-    await app.init();
+   app = moduleFixture.createNestApplication();
+app.setGlobalPrefix('api/v1');                 // <-- add this line
+app.useGlobalPipes(new ValidationPipe());
+await app.init();
 
     // Authenticate test admin/receptionist session
     const loginRes = await request(app.getHttpServer())

@@ -13,8 +13,9 @@ describe('AuditController (E2E - FR-CORE-005)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
-    await app.init();
+app.setGlobalPrefix('api/v1');                 // <-- add this line
+app.useGlobalPipes(new ValidationPipe());
+await app.init();
 
     const loginRes = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
