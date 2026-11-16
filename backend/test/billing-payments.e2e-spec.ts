@@ -3,29 +3,44 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 
+const uniquePhone = `+2519${(Date.now() + 1).toString().slice(-8)}`;
+
 describe('Billing & Payments Controllers (E2E - FR-BIL / FR-PAY)', () => {
   let app: INestApplication;
   let authToken: string;
+  let patientId: string;
+  let billId: string;
+  let paymentId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-   app = moduleFixture.createNestApplication();
-app.setGlobalPrefix('api/v1');                 // <-- add this line
-app.useGlobalPipes(new ValidationPipe());
-await app.init();
+    app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
 
     const loginRes = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
       .send({ email: 'admin@dcms.com', password: 'Password123!' });
-    
     authToken = loginRes.body.accessToken;
+
+    const patientRes = await request(app.getHttpServer())
+      .post('/api/v1/patients')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        fullName: 'Billing Test Patient',
+        phoneNumber: uniquePhone,
+        gender: 'Female',
+        dateOfBirth: '1992-03-03',
+      });
+    patientId = patientRes.body.id;
   });
 
   afterAll(async () => {
-    await app.close();
+    await app?.close();
   });
 
   it('/api/v1/billing/bills (POST) - should generate itemized invoice from treatment plan', async () => {
@@ -33,15 +48,14 @@ await app.init();
       .post('/api/v1/billing/bills')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        patientId: 'pat-100',
-        treatmentPlanId: 'tp-001',
-        items: [{ description: 'Root Canal Treatment', procedureCode: 'RCT-01', amount: 3500 }],
-        subtotal: 3500,
-        tax: 0,
-        totalAmount: 3500,
+        patientId,
+        items: [{ description: 'Root Canal Treatment', quantity: 1, unitPrice: 3500 }],
       });
 
     expect([201, 400, 404]).toContain(response.status);
+    if (response.status === 201) {
+      billId = response.body.id;
+    }
   });
 
   it('/api/v1/payments (POST) - should process split payment with copay calculation', async () => {
@@ -49,13 +63,16 @@ await app.init();
       .post('/api/v1/payments')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        billId: 'bill-001',
+        billId,
         amountPaid: 2000,
         paymentMethod: 'Cash',
         copayAmount: 500,
       });
 
     expect([201, 400, 404]).toContain(response.status);
+    if (response.status === 201) {
+      paymentId = response.body.id;
+    }
   });
 
   it('/api/v1/payments/reversals (POST) - should require audited authorization for reversals', async () => {
@@ -63,7 +80,7 @@ await app.init();
       .post('/api/v1/payments/reversals')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        paymentId: 'pay-001',
+        paymentId: paymentId ?? '00000000-0000-0000-0000-000000000000',
         reason: 'Incorrect billing code selection',
       });
 

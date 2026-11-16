@@ -19,9 +19,15 @@ export class PatientsController {
 
   @Get()
   @RequirePermissions('patients:read')
-  async search(@Query('q') query: string) {
+  async searchByQuery(@Query('q') query: string) {
     return await this.patientsService.search(query);
   }
+
+  @Get('search')
+@RequirePermissions('patients:read')
+search(@Query('q') q: string) {
+  return this.patientsService.search(q);
+}
 
   @Get(':id')
   @RequirePermissions('patients:read')

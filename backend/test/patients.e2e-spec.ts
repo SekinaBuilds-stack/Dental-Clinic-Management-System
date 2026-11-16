@@ -3,6 +3,9 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 
+// Unique per run so repeated runs don't collide with data from earlier runs
+const uniquePhone = `+2519${Date.now().toString().slice(-8)}`;
+
 describe('PatientsController (E2E - FR-PAT)', () => {
   let app: INestApplication;
   let authToken: string;
@@ -12,21 +15,21 @@ describe('PatientsController (E2E - FR-PAT)', () => {
       imports: [AppModule],
     }).compile();
 
-   app = moduleFixture.createNestApplication();
-app.setGlobalPrefix('api/v1');                 // <-- add this line
-app.useGlobalPipes(new ValidationPipe());
-await app.init();
+    app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
 
     // Authenticate test admin/receptionist session
     const loginRes = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
       .send({ email: 'admin@dcms.com', password: 'Password123!' });
-    
+
     authToken = loginRes.body.accessToken;
   });
 
   afterAll(async () => {
-    await app.close();
+    await app?.close();
   });
 
   it('/api/v1/patients (POST) - should register a new patient successfully', async () => {
@@ -35,10 +38,12 @@ await app.init();
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         fullName: 'Sekina Nesrie',
-        phone: '+251911223344',
+        phoneNumber: uniquePhone,
         gender: 'Female',
         dateOfBirth: '2001-05-07',
-        medicalAlerts: ['Penicillin Allergy'],
+        medicalAlerts: [
+          { alertType: 'Allergy', severity: 'High', description: 'Penicillin Allergy' },
+        ],
       });
 
     expect(response.status).toBe(201);
@@ -48,12 +53,14 @@ await app.init();
 
   it('/api/v1/patients/search?q= (GET) - should search patient by phone number', async () => {
     const response = await request(app.getHttpServer())
-      .get('/api/v1/patients/search?q=+251911223344')
+      .get(`/api/v1/patients/search?q=${encodeURIComponent(uniquePhone)}`)
       .set('Authorization', `Bearer ${authToken}`);
 
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body.length).toBeGreaterThan(0);
-    expect(response.body[0].medicalAlerts).toContain('Penicillin Allergy');
+    expect(
+      response.body[0].medicalAlerts.some((a: any) => a.description === 'Penicillin Allergy'),
+    ).toBe(true);
   });
 });

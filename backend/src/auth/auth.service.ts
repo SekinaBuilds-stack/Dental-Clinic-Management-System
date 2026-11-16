@@ -11,9 +11,26 @@ export class AuthService {
     const mockUser = {
       id: 1,
       email: 'admin@dcms.com',
-      // Hash of 'Admin123!' generated via bcrypt
-      passwordHash: '$2b$10$EpV9Xq0SUv7K1g9tD4e02O3P1dZ1U9n5sF0vWb2lG1X7b9f3C9t9i', 
-      role: 'Clinic Manager',
+      // Hash of 'Password123!' generated via bcrypt
+      passwordHash: '$2b$10$xa.Rf/9ibIKYXCqFNffXTeWAooPByl0jpli8/iAcVKJuOxcJfU2Sa', 
+     role: 'Clinic Manager / Admin',
+ permissions: [
+  // patients
+  'patients:create', 'patients:read', 'patients:update',
+  // scheduler
+  'appointments:create', 'appointments:read', 'appointments:update', 'appointments:manage',
+  'waitlist:manage',
+  // clinical
+  'emr:read', 'emr:write', 'lab:manage',
+  // billing, payments, insurance
+  'billing:read', 'billing:write', 'billing:manage',
+  'payments:read', 'payments:write', 'payments:process', 'payments:reverse',
+  'insurance:read', 'insurance:manage',
+  // retail
+  'retail:manage', 'retail:return', 'retail:pos',
+  // other
+  'inventory:manage', 'reports:view', 'admin:users',
+],
     };
 
     if (email === mockUser.email) {
@@ -27,7 +44,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id, role: user.role };
+    const payload = { email: user.email, sub: user.id, role: user.role, permissions: user.permissions };
     return {
       accessToken: this.jwtService.sign(payload),
       user,

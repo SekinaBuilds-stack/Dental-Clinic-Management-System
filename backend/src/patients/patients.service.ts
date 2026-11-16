@@ -1,7 +1,7 @@
 // backend/src/patients/patients.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, ILike } from 'typeorm';
 import { Patient } from './entities/patient.entity';
 import { CreatePatientDto } from './dto/create-patient.dto';
 
@@ -26,7 +26,9 @@ export class PatientsService {
   }
 
   async search(query: string): Promise<Patient[]> {
-    if (!query) {
+    const q = query?.trim();
+
+    if (!q) {
       return await this.patientRepository.find({
         take: 50,
         relations: { medicalAlerts: true },
@@ -35,9 +37,9 @@ export class PatientsService {
 
     return await this.patientRepository.find({
       where: [
-        { fullName: Like(`%${query}%`) },
-        { phoneNumber: Like(`%${query}%`) },
-        { fileNumber: Like(`%${query}%`) },
+        { fullName: ILike(`%${q}%`) },
+        { phoneNumber: ILike(`%${q}%`) },
+        { fileNumber: ILike(`%${q}%`) },
       ],
       relations: { medicalAlerts: true },
       take: 20,
