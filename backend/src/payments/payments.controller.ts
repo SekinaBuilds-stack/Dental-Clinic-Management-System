@@ -21,7 +21,13 @@ export class PaymentsController {
   @Post()
   @RequirePermissions('payments:write')
   async processPayment(@Body() dto: { billId: string; amount: number; paymentMethod: string; transactionReference?: string; cashierId: string }) {
-    return (this.paymentsService as any).processPayment(dto);
+    return this.paymentsService.createPayment({
+      billId: dto.billId,
+      amount: dto.amount,
+      paymentMethod: dto.paymentMethod,
+      transactionReference: dto.transactionReference,
+      receivedBy: dto.cashierId,
+    });
   }
 
   // TR-PAY-003: Payment Reversal (Manager Approved)

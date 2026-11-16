@@ -52,38 +52,35 @@ describe('Billing & Payments Controllers (E2E - FR-BIL / FR-PAY)', () => {
         items: [{ description: 'Root Canal Treatment', quantity: 1, unitPrice: 3500 }],
       });
 
-    expect([201, 400, 404]).toContain(response.status);
-    if (response.status === 201) {
+   expect(response.status).toBe(201);
+
       billId = response.body.id;
-    }
   });
 
-  it('/api/v1/payments (POST) - should process split payment with copay calculation', async () => {
+   it('/api/v1/payments (POST) - should process split payment with copay calculation', async () => {
     const response = await request(app.getHttpServer())
       .post('/api/v1/payments')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         billId,
-        amountPaid: 2000,
-        paymentMethod: 'Cash',
-        copayAmount: 500,
+        amount: 2000,
+        paymentMethod: 'CASH',
+        cashierId: 'cashier-001',
       });
 
-    expect([201, 400, 404]).toContain(response.status);
-    if (response.status === 201) {
-      paymentId = response.body.id;
-    }
+    expect(response.status).toBe(201);
+    paymentId = response.body.id;
   });
 
-  it('/api/v1/payments/reversals (POST) - should require audited authorization for reversals', async () => {
+  it('/api/v1/payments/:id/reverse (POST) - should require audited authorization for reversals', async () => {
     const response = await request(app.getHttpServer())
-      .post('/api/v1/payments/reversals')
+      .post(`/api/v1/payments/${paymentId}/reverse`)
       .set('Authorization', `Bearer ${authToken}`)
       .send({
-        paymentId: paymentId ?? '00000000-0000-0000-0000-000000000000',
         reason: 'Incorrect billing code selection',
+        managerId: 'manager-001',
       });
 
-    expect([201, 403, 400, 404]).toContain(response.status);
+    expect([201, 403]).toContain(response.status);
   });
 });

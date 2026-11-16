@@ -42,20 +42,26 @@ describe('EmrController (E2E - FR-EMR)', () => {
     await app?.close();
   });
 
-  it('/api/v1/emr/treatment-plans (POST) - should create phased treatment plan', async () => {
+   it('/api/v1/emr/treatment-plans (POST) - should create phased treatment plan', async () => {
     const response = await request(app.getHttpServer())
       .post('/api/v1/emr/treatment-plans')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         patientId,
-        phases: [
+        title: 'Phased Root Canal Plan',
+        items: [
           {
             phaseNumber: 1,
-            procedures: [{ toothNumber: 16, procedureCode: 'RCT-01', cost: 3500 }],
+            toothNumber: 16,
+            procedureName: 'Root Canal Treatment (RCT-01)',
+            estimatedCost: 3500,
           },
         ],
       });
 
     expect([201, 400, 404]).toContain(response.status);
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body.items).toHaveLength(1);
   });
 });
