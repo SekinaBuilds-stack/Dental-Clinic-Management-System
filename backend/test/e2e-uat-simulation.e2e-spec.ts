@@ -6,6 +6,7 @@ import { AppModule } from '../src/app.module';
 describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let app: INestApplication;
   let authToken: string;
+  let createdPatientId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -64,8 +65,28 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
+    createdPatientId = response.body.id;
     expect(response.body.fullName).toBe('Sekina Nesrie');
     expect(response.body.medicalAlerts).toContain('Penicillin Allergy');
     expect(response.body.medicalAlerts).toContain('Asthma');
+  });
+
+  it('Step 5: Patient Search & Profile Retrieval (TR-PAT-004, TR-PAT-005) - should search patient by phone and fetch profile/history', async () => {
+    const searchRes = await request(app.getHttpServer())
+      .get('/api/v1/patients/search?q=+251911223344')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(searchRes.status).toBe(200);
+    expect(Array.isArray(searchRes.body)).toBe(true);
+    expect(searchRes.body.length).toBeGreaterThan(0);
+    expect(searchRes.body[0].medicalAlerts).toContain('Penicillin Allergy');
+
+    const profileRes = await request(app.getHttpServer())
+      .get(`/api/v1/patients/${createdPatientId}`)
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(profileRes.status).toBe(200);
+    expect(profileRes.body.fullName).toBe('Sekina Nesrie');
+    expect(profileRes.body).toHaveProperty('visits');
   });
 });
