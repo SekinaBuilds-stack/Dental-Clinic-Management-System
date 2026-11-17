@@ -11,6 +11,8 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let testChairId: string;
   let createdAppointmentId: string;
   let createdBillId: string;
+  let splitPaymentBillId: string;
+  let lastPaymentId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -390,5 +392,58 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(dayBookRes.status).toBe(200);
     expect(dayBookRes.body).toHaveProperty('totalCollections');
     expect(Number(dayBookRes.body.totalCollections)).toBeGreaterThanOrEqual(1500.00);
+  });
+
+  it('Step 14: Cashier Payment Terminal & Multi-Method Checkout (TR-PAY-001, TR-PAY-002) - should process split Card and Mobile Money payments and verify ledger', async () => {
+    // 1. Create a follow-up hygiene bill for split payment validation
+    const hygieneBillRes = await request(app.getHttpServer())
+      .post('/api/v1/bills')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        items: [
+          { procedureCode: 'PROC-SCAL-01', description: 'Ultrasonic Scaling & Polishing', unitPrice: 1000.00, quantity: 1, total: 1000.00 },
+        ],
+        totalAmount: 1000.00,
+      });
+
+    expect([200, 201]).toContain(hygieneBillRes.status);
+    splitPaymentBillId = hygieneBillRes.body.id;
+
+    // 2. Pay partial amount via CARD (TR-PAY-002)
+    const cardPaymentRes = await request(app.getHttpServer())
+      .post('/api/v1/payments')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        billId: splitPaymentBillId,
+        amountPaid: 600.00,
+        paymentMethod: 'CARD',
+        referenceNumber: 'POS-CARD-9876',
+      });
+
+    expect([200, 201]).toContain(cardPaymentRes.status);
+
+    // 3. Pay remaining balance via MOBILE_MONEY (TR-PAY-002)
+    const mobileMoneyRes = await request(app.getHttpServer())
+      .post('/api/v1/payments')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        billId: splitPaymentBillId,
+        amountPaid: 400.00,
+        paymentMethod: 'MOBILE_MONEY',
+        referenceNumber: 'TELEBIRR-TXN-54321',
+      });
+
+    expect([200, 201]).toContain(mobileMoneyRes.status);
+    lastPaymentId = mobileMoneyRes.body.id;
+
+    // 4. Verify Payment Ledger reflects paid transactions (TR-PAY-001)
+    const ledgerRes = await request(app.getHttpServer())
+      .get('/api/v1/payments')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(ledgerRes.status).toBe(200);
+    expect(Array.isArray(ledgerRes.body)).toBe(true);
+    expect(ledgerRes.body.length).toBeGreaterThanOrEqual(3);
   });
 });
