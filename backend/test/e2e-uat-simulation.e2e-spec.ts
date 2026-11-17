@@ -204,4 +204,66 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(planRes.body).toHaveProperty('id');
     expect(planRes.body.isAccepted).toBe(true);
   });
+
+  it('Step 9: Clinical Notes, Prescriptions & Digital Consent (TR-EMR-003, TR-EMR-004, TR-EMR-008) - should record visit notes, allergy-safe prescription, and signed consent', async () => {
+    // 1. Record Clinical Visit Notes (TR-EMR-003)
+    const notesRes = await request(app.getHttpServer())
+      .post('/api/v1/clinical-notes')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        doctorId: testDoctorId,
+        appointmentId: createdAppointmentId,
+        chiefComplaint: 'Sensitivity on upper right molar',
+        clinicalFindings: 'Occlusal caries on tooth #16, no pulpal exposure',
+        procedureNotes: 'Local anesthesia administered (Lidocaine 2%), caries excavated, composite resin placed and cured.',
+      });
+
+    expect([200, 201]).toContain(notesRes.status);
+    expect(notesRes.body).toHaveProperty('id');
+
+    // 2. Issue Allergy-Safe Prescription (TR-EMR-004)
+    const rxRes = await request(app.getHttpServer())
+      .post('/api/v1/prescriptions')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        doctorId: testDoctorId,
+        notes: 'Penicillin allergy noted — prescribed Clindamycin alternative',
+        items: [
+          {
+            drugName: 'Clindamycin 300mg',
+            dosage: '1 capsule',
+            frequency: 'Every 8 hours',
+            duration: '5 days',
+            instructions: 'Take with a full glass of water after meals',
+          },
+          {
+            drugName: 'Ibuprofen 400mg',
+            dosage: '1 tablet',
+            frequency: 'Every 8 hours as needed for pain',
+            duration: '3 days',
+            instructions: 'Take with food',
+          },
+        ],
+      });
+
+    expect([200, 201]).toContain(rxRes.status);
+    expect(rxRes.body).toHaveProperty('id');
+
+    // 3. Capture Digital Consent Signature (TR-EMR-008)
+    const consentRes = await request(app.getHttpServer())
+      .post('/api/v1/consents')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        procedureName: 'Composite Restoration - Tooth #16',
+        consentText: 'I acknowledge the risks, benefits, and alternatives for restorative dental treatment and consent to proceed.',
+        signatureData: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+        signedBy: 'Sekina Nesrie',
+      });
+
+    expect([200, 201]).toContain(consentRes.status);
+    expect(consentRes.body).toHaveProperty('id');
+  });
 });
