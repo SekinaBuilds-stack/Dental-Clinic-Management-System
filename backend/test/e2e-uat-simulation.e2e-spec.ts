@@ -10,6 +10,7 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let testDoctorId: string;
   let testChairId: string;
   let createdAppointmentId: string;
+  let createdBillId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -361,6 +362,33 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
 
     expect([200, 201]).toContain(billRes.status);
     expect(billRes.body).toHaveProperty('id');
+    createdBillId = billRes.body.id;
     expect(billRes.body.status).toBe('UNPAID');
+  });
+
+  it('Step 13: Day-Book Transaction Summary & Receipt Issuance (TR-BIL-005, TR-BIL-006) - should record payment, issue receipt, and verify day-book summary', async () => {
+    // 1. Record Payment & Issue Receipt (TR-BIL-006)
+    const paymentRes = await request(app.getHttpServer())
+      .post('/api/v1/payments')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        billId: createdBillId,
+        amountPaid: 1500.00,
+        paymentMethod: 'CASH',
+        referenceNumber: 'CASH-REC-001',
+      });
+
+    expect([200, 201]).toContain(paymentRes.status);
+    expect(paymentRes.body).toHaveProperty('receiptNumber');
+
+    // 2. Verify Day-Book Daily Transaction Summary (TR-BIL-005)
+    const todayStr = new Date().toISOString().split('T')[0];
+    const dayBookRes = await request(app.getHttpServer())
+      .get(`/api/v1/day-book?date=${todayStr}`)
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(dayBookRes.status).toBe(200);
+    expect(dayBookRes.body).toHaveProperty('totalCollections');
+    expect(Number(dayBookRes.body.totalCollections)).toBeGreaterThanOrEqual(1500.00);
   });
 });
