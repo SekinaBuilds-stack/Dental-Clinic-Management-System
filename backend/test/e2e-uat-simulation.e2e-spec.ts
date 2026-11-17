@@ -266,4 +266,29 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect([200, 201]).toContain(consentRes.status);
     expect(consentRes.body).toHaveProperty('id');
   });
+
+  it('Step 10: MinIO Imaging S3 Storage Attachment (TR-EMR-007) - should upload X-ray image linked to patient and tooth #16', async () => {
+    const dummyImageBuffer = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      'base64',
+    );
+
+    const uploadRes = await request(app.getHttpServer())
+      .post('/api/v1/imaging/upload')
+      .set('Authorization', `Bearer ${authToken}`)
+      .field('patientId', createdPatientId)
+      .field('appointmentId', createdAppointmentId)
+      .field('toothNumber', 16)
+      .field('imageType', 'PA_XRAY')
+      .field('notes', 'Pre-operative periapical X-ray showing occlusal caries on tooth #16')
+      .attach('file', dummyImageBuffer, {
+        filename: 'tooth-16-periapical.png',
+        contentType: 'image/png',
+      });
+
+    expect([200, 201]).toContain(uploadRes.status);
+    expect(uploadRes.body).toHaveProperty('id');
+    expect(uploadRes.body).toHaveProperty('fileUrl');
+    expect(uploadRes.body.toothNumber).toBe(16);
+  });
 });
