@@ -7,6 +7,8 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let app: INestApplication;
   let authToken: string;
   let createdPatientId: string;
+  let testDoctorId: string;
+  let testChairId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -24,6 +26,23 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
       .send({ email: 'admin@dcms.com', password: 'Password123!' });
 
     authToken = loginRes.body.accessToken;
+
+    // Fetch seeded doctor and chair for scheduling tests
+    const doctorsRes = await request(app.getHttpServer())
+      .get('/api/v1/doctors')
+      .set('Authorization', `Bearer ${authToken}`);
+    
+    if (doctorsRes.body && doctorsRes.body.length > 0) {
+      testDoctorId = doctorsRes.body[0].id;
+    }
+
+    const chairsRes = await request(app.getHttpServer())
+      .get('/api/v1/treatment-chairs')
+      .set('Authorization', `Bearer ${authToken}`);
+    
+    if (chairsRes.body && chairsRes.body.length > 0) {
+      testChairId = chairsRes.body[0].id;
+    }
   });
 
   afterAll(async () => {
@@ -88,5 +107,42 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(profileRes.status).toBe(200);
     expect(profileRes.body.fullName).toBe('Sekina Nesrie');
     expect(profileRes.body).toHaveProperty('visits');
+  });
+
+  it('Step 6: Appointment Booking & Conflict Detection (TR-APT-001, TR-APT-002, TR-APT-003) - should book appointment and prevent double-booking', async () => {
+    const startTime = new Date(Date.now() + 86400000).toISOString(); // Tomorrow
+    const endTime = new Date(Date.now() + 86400000 + 3600000).toISOString(); // +1 hour
+
+    // 1. Successful booking
+    const bookingRes = await request(app.getHttpServer())
+      .post('/api/v1/appointments')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        doctorId: testDoctorId,
+        chairId: testChairId,
+        startTime,
+        endTime,
+        notes: 'Routine checkup and cleaning',
+      });
+
+    expect(bookingRes.status).toBe(201);
+    expect(bookingRes.body).toHaveProperty('id');
+    expect(bookingRes.body.status).toBe('Booked');
+
+    // 2. Conflict detection / Double-booking attempt
+    const conflictRes = await request(app.getHttpServer())
+      .post('/api/v1/appointments')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        doctorId: testDoctorId, // Same doctor at overlapping time
+        chairId: testChairId,
+        startTime,
+        endTime,
+        notes: 'Conflicting appointment',
+      });
+
+    expect(conflictRes.status).toBe(409);
   });
 });
