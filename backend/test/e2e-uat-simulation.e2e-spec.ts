@@ -291,4 +291,28 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(uploadRes.body).toHaveProperty('fileUrl');
     expect(uploadRes.body.toothNumber).toBe(16);
   });
+
+  it('Step 11: Chairside Material Consumption & Inventory Deduction (TR-INV-009, TR-INV-010) - should record material consumption and verify stock ledger movement', async () => {
+    const consumptionRes = await request(app.getHttpServer())
+      .post('/api/v1/material-consumptions')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        doctorId: testDoctorId,
+        appointmentId: createdAppointmentId,
+        toothNumber: 16,
+        procedureCode: 'PROC-COMP-01',
+        items: [
+          {
+            itemSku: 'CONS-COMP-RESIN',
+            quantityConsumed: 1,
+            unit: 'syringe',
+          },
+        ],
+      });
+
+    expect([200, 201]).toContain(consumptionRes.status);
+    expect(consumptionRes.body).toHaveProperty('id');
+    expect(consumptionRes.body).toHaveProperty('stockMovements');
+  });
 });
