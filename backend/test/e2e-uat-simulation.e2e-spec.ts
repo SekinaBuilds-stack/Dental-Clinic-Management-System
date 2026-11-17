@@ -161,4 +161,47 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
       expect(res.body.status).toBe(state);
     }
   });
+
+  it('Step 8: Clinical Odontogram & Treatment Plan Creation (TR-EMR-001, TR-EMR-002) - should record tooth condition and treatment plan', async () => {
+    // 1. Record Odontogram condition for tooth #16
+    const odontogramRes = await request(app.getHttpServer())
+      .post('/api/v1/odontograms')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        toothNumber: 16,
+        condition: 'CARIES',
+        surface: 'OCLUSAL',
+        notes: 'Deep pit and fissure caries',
+      });
+
+    expect([200, 201]).toContain(odontogramRes.status);
+    expect(odontogramRes.body).toHaveProperty('id');
+    expect(odontogramRes.body.toothNumber).toBe(16);
+
+    // 2. Create Phased Treatment Plan
+    const planRes = await request(app.getHttpServer())
+      .post('/api/v1/treatment-plans')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        doctorId: testDoctorId,
+        title: 'Comprehensive Restoration & Hygiene Plan',
+        phases: [
+          {
+            phaseNumber: 1,
+            description: 'Pain relief and composite restoration on tooth #16',
+            items: [
+              { toothNumber: 16, procedureCode: 'PROC-COMP-01', procedureName: 'Composite Restoration - 1 Surface', cost: 1500.00 },
+            ],
+          },
+        ],
+        totalEstimatedCost: 1500.00,
+        isAccepted: true,
+      });
+
+    expect([200, 201]).toContain(planRes.status);
+    expect(planRes.body).toHaveProperty('id');
+    expect(planRes.body.isAccepted).toBe(true);
+  });
 });
