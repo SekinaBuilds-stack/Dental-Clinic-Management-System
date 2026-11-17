@@ -9,6 +9,7 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let createdPatientId: string;
   let testDoctorId: string;
   let testChairId: string;
+  let createdAppointmentId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -128,6 +129,7 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
 
     expect(bookingRes.status).toBe(201);
     expect(bookingRes.body).toHaveProperty('id');
+    createdAppointmentId = bookingRes.body.id;
     expect(bookingRes.body.status).toBe('Booked');
 
     // 2. Conflict detection / Double-booking attempt
@@ -136,7 +138,7 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         patientId: createdPatientId,
-        doctorId: testDoctorId, // Same doctor at overlapping time
+        doctorId: testDoctorId,
         chairId: testChairId,
         startTime,
         endTime,
@@ -144,5 +146,19 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
       });
 
     expect(conflictRes.status).toBe(409);
+  });
+
+  it('Step 7: Appointment Status Lifecycle (TR-APT-004) - should transition appointment through operational states', async () => {
+    const states = ['Confirmed', 'Checked-In', 'In Treatment', 'Completed'];
+
+    for (const state of states) {
+      const res = await request(app.getHttpServer())
+        .patch(`/api/v1/appointments/${createdAppointmentId}/status`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ status: state });
+
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe(state);
+    }
   });
 });
