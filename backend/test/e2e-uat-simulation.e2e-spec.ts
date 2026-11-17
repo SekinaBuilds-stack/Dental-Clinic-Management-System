@@ -315,4 +315,52 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(consumptionRes.body).toHaveProperty('id');
     expect(consumptionRes.body).toHaveProperty('stockMovements');
   });
+
+  it('Step 12: Procedure Price List & Itemized Bill Generation (TR-BIL-001, TR-BIL-002, TR-BIL-003) - should configure prices, generate estimate, and create itemized bill', async () => {
+    // 1. Configure / Verify Procedure Price (TR-BIL-001)
+    const priceRes = await request(app.getHttpServer())
+      .post('/api/v1/procedure-prices')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        procedureCode: 'PROC-COMP-01',
+        procedureName: 'Composite Restoration - 1 Surface',
+        basePrice: 1500.00,
+        toothSpecificPricing: true,
+      });
+
+    expect([200, 201]).toContain(priceRes.status);
+
+    // 2. Generate Treatment Estimate from Treatment Plan (TR-BIL-003)
+    const estimateRes = await request(app.getHttpServer())
+      .post('/api/v1/estimates')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        items: [
+          { procedureCode: 'PROC-COMP-01', description: 'Composite Restoration on Tooth #16', unitPrice: 1500.00, quantity: 1, total: 1500.00 }
+        ],
+        totalAmount: 1500.00,
+      });
+
+    expect([200, 201]).toContain(estimateRes.status);
+    expect(estimateRes.body).toHaveProperty('id');
+    expect(estimateRes.body.totalAmount).toBe(1500.00);
+
+    // 3. Generate Itemized Bill (TR-BIL-002)
+    const billRes = await request(app.getHttpServer())
+      .post('/api/v1/bills')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        appointmentId: createdAppointmentId,
+        items: [
+          { procedureCode: 'PROC-COMP-01', description: 'Composite Restoration on Tooth #16', unitPrice: 1500.00, quantity: 1, total: 1500.00 }
+        ],
+        totalAmount: 1500.00,
+      });
+
+    expect([200, 201]).toContain(billRes.status);
+    expect(billRes.body).toHaveProperty('id');
+    expect(billRes.body.status).toBe('UNPAID');
+  });
 });
