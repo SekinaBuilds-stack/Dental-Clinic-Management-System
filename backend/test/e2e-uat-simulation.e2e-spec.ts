@@ -13,6 +13,7 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let createdBillId: string;
   let splitPaymentBillId: string;
   let lastPaymentId: string;
+  let insuranceBillId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -445,5 +446,49 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(ledgerRes.status).toBe(200);
     expect(Array.isArray(ledgerRes.body)).toBe(true);
     expect(ledgerRes.body.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('Step 15: Insurance Claim Submission & Co-Pay Calculation (TR-PAY-004, TR-PAY-005, TR-PAY-006) - should submit insurance claim, calculate co-pay, and track status', async () => {
+    // 1. Create a bill for insurance procedure
+    const insBillRes = await request(app.getHttpServer())
+      .post('/api/v1/bills')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        items: [
+          { procedureCode: 'PROC-CROWN-01', description: 'Porcelain Crown - Tooth #16', unitPrice: 5000.00, quantity: 1, total: 5000.00 },
+        ],
+        totalAmount: 5000.00,
+      });
+
+    expect([200, 201]).toContain(insBillRes.status);
+    insuranceBillId = insBillRes.body.id;
+
+    // 2. Submit Insurance Claim & Calculate Co-Pay (TR-PAY-004, TR-PAY-006)
+    const claimRes = await request(app.getHttpServer())
+      .post('/api/v1/insurance-claims')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        patientId: createdPatientId,
+        billId: insuranceBillId,
+        insuranceProvider: 'Awash Insurance',
+        policyNumber: 'POL-AWASH-998877',
+        claimedAmount: 4000.00, // 80% coverage
+        calculatedCopay: 1000.00, // 20% patient co-pay
+      });
+
+    expect([200, 201]).toContain(claimRes.status);
+    expect(claimRes.body).toHaveProperty('id');
+    expect(claimRes.body.status).toBe('Submitted');
+    expect(claimRes.body.calculatedCopay).toBe(1000.00);
+
+    // 3. Track Claim Status (TR-PAY-005)
+    const claimId = claimRes.body.id;
+    const statusRes = await request(app.getHttpServer())
+      .get(`/api/v1/insurance-claims/${claimId}`)
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(statusRes.status).toBe(200);
+    expect(statusRes.body.status).toBe('Submitted');
   });
 });
