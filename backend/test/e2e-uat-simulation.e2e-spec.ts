@@ -6,6 +6,7 @@ import { AppModule } from '../src/app.module';
 describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let app: INestApplication;
   let authToken: string;
+  let receptionistToken: string;
   let createdPatientId: string;
   let testDoctorId: string;
   let testChairId: string;
@@ -28,12 +29,19 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    // Authenticate test admin/receptionist session
+    // Authenticate test admin session
     const loginRes = await request(app.getHttpServer())
       .post('/api/v1/auth/login')
       .send({ email: 'admin@dcms.com', password: 'Password123!' });
 
     authToken = loginRes.body.accessToken;
+
+    // Authenticate test receptionist session (lower privilege role)
+    const receptionistLoginRes = await request(app.getHttpServer())
+      .post('/api/v1/auth/login')
+      .send({ email: 'receptionist@dcms.com', password: 'Password123!' });
+
+    receptionistToken = receptionistLoginRes.body?.accessToken ?? authToken;
 
     // Fetch seeded doctor and chair for scheduling tests
     const doctorsRes = await request(app.getHttpServer())
@@ -640,5 +648,28 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
 
     expect(expiryRes.status).toBe(200);
     expect(Array.isArray(expiryRes.body)).toBe(true);
+  });
+
+  it('Step 20: Role-Based Access Control (RBAC) & Security Guardrails (TR-CORE-001, TR-CORE-002, TR-CORE-003) - should enforce authentication and authorization guards', async () => {
+    // 1. Test Unauthenticated Request Rejection (401 Unauthorized) (TR-CORE-001)
+    const unauthRes = await request(app.getHttpServer())
+      .get('/api/v1/audit-logs');
+
+    expect(unauthRes.status).toBe(401);
+
+    // 2. Test Insufficient Role Permission Rejection (403 Forbidden) (TR-CORE-002)
+    // Receptionist role attempting to access admin-only audit logs or procedure price overrides
+    const forbiddenRes = await request(app.getHttpServer())
+      .get('/api/v1/audit-logs')
+      .set('Authorization', `Bearer ${receptionistToken}`);
+
+    expect(forbiddenRes.status).toBe(403);
+
+    // 3. Verify Valid Authorized Access (200 OK) (TR-CORE-003)
+    const authorizedRes = await request(app.getHttpServer())
+      .get('/api/v1/patients')
+      .set('Authorization', `Bearer ${receptionistToken}`);
+
+    expect(authorizedRes.status).toBe(200);
   });
 });
