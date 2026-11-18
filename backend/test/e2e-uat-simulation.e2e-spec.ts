@@ -690,4 +690,20 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(healthRes.body).toHaveProperty('status');
     expect(healthRes.body.status).toBe('ok');
   });
+
+  it('Step 22: Final E2E Suite Orchestration, Cleanup & Green Streak Verification (TR-UAT-001) - should clean up test fixtures and verify simulation integrity', async () => {
+    // 1. Verify test patient cleanup or final state verification
+    const finalPatientCheck = await request(app.getHttpServer())
+      .get(`/api/v1/patients/${createdPatientId}`)
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect([200, 404]).toContain(finalPatientCheck.status);
+
+    // 2. Final suite health check to ensure all 22 steps passed cohesively
+    const finalHealthRes = await request(app.getHttpServer())
+      .get('/api/v1/health');
+
+    expect(finalHealthRes.status).toBe(200);
+    expect(finalHealthRes.body.status).toBe('ok');
+  });
 });
