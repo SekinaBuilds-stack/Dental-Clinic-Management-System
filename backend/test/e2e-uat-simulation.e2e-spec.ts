@@ -491,4 +491,27 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(statusRes.status).toBe(200);
     expect(statusRes.body.status).toBe('Submitted');
   });
+
+  it('Step 16: Audited Payment Reversals (TR-PAY-003, TR-CORE-005) - should reverse payment and record audit log entry', async () => {
+    // 1. Process payment reversal/refund for last payment (TR-PAY-003)
+    const reversalRes = await request(app.getHttpServer())
+      .post(`/api/v1/payments/${lastPaymentId}/reverse`)
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        reason: 'Duplicate checkout entry error',
+      });
+
+    expect([200, 201]).toContain(reversalRes.status);
+    expect(reversalRes.body).toHaveProperty('status');
+    expect(reversalRes.body.status).toBe('REVERSED');
+
+    // 2. Verify immutable audit log entry was generated (TR-CORE-005)
+    const auditRes = await request(app.getHttpServer())
+      .get('/api/v1/audit-logs?action=PAYMENT_REVERSAL')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(auditRes.status).toBe(200);
+    expect(Array.isArray(auditRes.body)).toBe(true);
+    expect(auditRes.body.length).toBeGreaterThan(0);
+  });
 });
