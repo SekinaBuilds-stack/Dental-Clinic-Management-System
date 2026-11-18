@@ -658,7 +658,6 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(unauthRes.status).toBe(401);
 
     // 2. Test Insufficient Role Permission Rejection (403 Forbidden) (TR-CORE-002)
-    // Receptionist role attempting to access admin-only audit logs or procedure price overrides
     const forbiddenRes = await request(app.getHttpServer())
       .get('/api/v1/audit-logs')
       .set('Authorization', `Bearer ${receptionistToken}`);
@@ -671,5 +670,24 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
       .set('Authorization', `Bearer ${receptionistToken}`);
 
     expect(authorizedRes.status).toBe(200);
+  });
+
+  it('Step 21: Audit Logging & System Health Telemetry (TR-CORE-004, TR-CORE-005, TR-CORE-006) - should query audit logs and verify system health endpoint', async () => {
+    // 1. Query Centralized Audit Logs (TR-CORE-004, TR-CORE-005)
+    const auditQueryRes = await request(app.getHttpServer())
+      .get('/api/v1/audit-logs')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(auditQueryRes.status).toBe(200);
+    expect(Array.isArray(auditQueryRes.body)).toBe(true);
+    expect(auditQueryRes.body.length).toBeGreaterThan(0);
+
+    // 2. Verify System Health Telemetry & DB Connectivity (TR-CORE-006)
+    const healthRes = await request(app.getHttpServer())
+      .get('/api/v1/health');
+
+    expect([200, 201]).toContain(healthRes.status);
+    expect(healthRes.body).toHaveProperty('status');
+    expect(healthRes.body.status).toBe('ok');
   });
 });
