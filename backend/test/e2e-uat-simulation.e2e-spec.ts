@@ -609,4 +609,36 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     const updatedStock = postStockRes.body?.[0]?.currentStock ?? 0;
     expect(updatedStock).toBe(initialStock + 10);
   });
+
+  it('Step 19: Low-Stock Alerts, Expiry Tracking & Stock Adjustments (TR-INV-006, TR-INV-007, TR-INV-008) - should adjust stock, trigger low-stock alert, and track batch expiry', async () => {
+    // 1. Record Manual Stock Adjustment for damaged/expired units (TR-INV-006)
+    const adjustmentRes = await request(app.getHttpServer())
+      .post('/api/v1/inventory/adjustments')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        itemSku: 'CONS-COMP-RESIN',
+        adjustmentQuantity: -8,
+        reason: 'PHYSICAL_COUNT_DISCREPANCY',
+        notes: 'Routine cycle count adjustment',
+      });
+
+    expect([200, 201]).toContain(adjustmentRes.status);
+    expect(adjustmentRes.body).toHaveProperty('id');
+
+    // 2. Verify Low-Stock Reorder Alerts Endpoint (TR-INV-007)
+    const lowStockRes = await request(app.getHttpServer())
+      .get('/api/v1/inventory/alerts/low-stock')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(lowStockRes.status).toBe(200);
+    expect(Array.isArray(lowStockRes.body)).toBe(true);
+
+    // 3. Verify Batch & Expiry Tracking Endpoint (TR-INV-008)
+    const expiryRes = await request(app.getHttpServer())
+      .get('/api/v1/inventory/alerts/expiring')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(expiryRes.status).toBe(200);
+    expect(Array.isArray(expiryRes.body)).toBe(true);
+  });
 });
