@@ -78,14 +78,15 @@ export class BillingService {
     const plan = await this.treatmentPlanRepo.findOne({ where: { id: treatmentPlanId }, relations: { items: true } });
     if (!plan) throw new NotFoundException('Treatment plan not found.');
 
-    let totalEstimate = 0;
+        let totalEstimate = 0;
     const items = plan.items.map((item: any) => {
+      const quantity = item.quantity || 1;
       const unitPrice = item.estimatedCost || 100; // fallback pricing
-      const totalPrice = item.quantity * unitPrice;
+      const totalPrice = quantity * unitPrice;
       totalEstimate += totalPrice;
       return {
         description: item.procedureName || item.description,
-        quantity: item.quantity || 1,
+        quantity,
         unitPrice,
         totalPrice,
       };
