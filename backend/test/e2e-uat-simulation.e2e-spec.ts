@@ -16,6 +16,7 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let insuranceBillId: string;
   let createdRequisitionId: string;
   let createdRfqId: string;
+  let createdPoId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -537,7 +538,7 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
 
     // 2. Issue Request for Quotation (RFQ) (TR-INV-002)
     const rfqRes = await request(app.getHttpServer())
-      .post('/api/v1/rfps') // or rfqs based on your routing
+      .post('/api/v1/rfps')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         requisitionId: createdRequisitionId,
@@ -565,6 +566,47 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
 
     expect([200, 201]).toContain(poRes.status);
     expect(poRes.body).toHaveProperty('id');
+    createdPoId = poRes.body.id;
     expect(poRes.body.status).toBe('ISSUED');
+  });
+
+  it('Step 18: Goods Receipt Note & Automated Inventory Stock-In (TR-INV-004, TR-INV-005) - should receive PO delivery and automatically increment inventory stock', async () => {
+    // 1. Check initial inventory stock level before GRN (TR-INV-005)
+    const preStockRes = await request(app.getHttpServer())
+      .get('/api/v1/inventory/items?sku=CONS-COMP-RESIN')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    const initialStock = preStockRes.body?.[0]?.currentStock ?? 0;
+
+    // 2. Record Goods Receipt Note (GRN) against PO (TR-INV-004)
+    const grnRes = await request(app.getHttpServer())
+      .post('/api/v1/goods-receipt-notes')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        purchaseOrderId: createdPoId,
+        deliveryNoteNumber: 'DN-ADS-2026-089',
+        receivedItems: [
+          {
+            itemSku: 'CONS-COMP-RESIN',
+            quantityReceived: 10,
+            batchNumber: 'BATCH-CR-2026A',
+            expiryDate: '2028-11-30',
+          },
+        ],
+        notes: 'All 10 composite syringes inspected and accepted in good condition',
+      });
+
+    expect([200, 201]).toContain(grnRes.status);
+    expect(grnRes.body).toHaveProperty('id');
+    expect(grnRes.body.status).toBe('COMPLETED');
+
+    // 3. Verify Inventory Stock-In incremented on-hand balance (TR-INV-005)
+    const postStockRes = await request(app.getHttpServer())
+      .get('/api/v1/inventory/items?sku=CONS-COMP-RESIN')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(postStockRes.status).toBe(200);
+    const updatedStock = postStockRes.body?.[0]?.currentStock ?? 0;
+    expect(updatedStock).toBe(initialStock + 10);
   });
 });
