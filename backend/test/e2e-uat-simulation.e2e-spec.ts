@@ -14,6 +14,8 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
   let splitPaymentBillId: string;
   let lastPaymentId: string;
   let insuranceBillId: string;
+  let createdRequisitionId: string;
+  let createdRfqId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -513,5 +515,56 @@ describe('DCMS End-to-End UAT Simulation (TR-UAT-001)', () => {
     expect(auditRes.status).toBe(200);
     expect(Array.isArray(auditRes.body)).toBe(true);
     expect(auditRes.body.length).toBeGreaterThan(0);
+  });
+
+  it('Step 17: Supplier Procurement Requisition & Purchase Orders (TR-INV-001, TR-INV-002, TR-INV-003) - should create PR, RFQ, and PO', async () => {
+    // 1. Create Material Requisition (PR) (TR-INV-001)
+    const prRes = await request(app.getHttpServer())
+      .post('/api/v1/purchase-requisitions')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        department: 'Dental Clinic',
+        items: [
+          { itemSku: 'CONS-COMP-RESIN', quantityRequested: 10, unit: 'syringe' },
+        ],
+        notes: 'Restocking low inventory for composite restoration procedures',
+      });
+
+    expect([200, 201]).toContain(prRes.status);
+    expect(prRes.body).toHaveProperty('id');
+    createdRequisitionId = prRes.body.id;
+    expect(prRes.body.status).toBe('PENDING');
+
+    // 2. Issue Request for Quotation (RFQ) (TR-INV-002)
+    const rfqRes = await request(app.getHttpServer())
+      .post('/api/v1/rfps') // or rfqs based on your routing
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        requisitionId: createdRequisitionId,
+        supplierName: 'Addis Dental Supplies Plc',
+        deadline: new Date(Date.now() + 172800000).toISOString(), // 2 days from now
+      });
+
+    expect([200, 201]).toContain(rfqRes.status);
+    expect(rfqRes.body).toHaveProperty('id');
+    createdRfqId = rfqRes.body.id;
+
+    // 3. Generate Purchase Order (PO) (TR-INV-003)
+    const poRes = await request(app.getHttpServer())
+      .post('/api/v1/purchase-orders')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        requisitionId: createdRequisitionId,
+        rfqId: createdRfqId,
+        supplierName: 'Addis Dental Supplies Plc',
+        items: [
+          { itemSku: 'CONS-COMP-RESIN', quantity: 10, unitPrice: 1200.00, total: 12000.00 }
+        ],
+        totalAmount: 12000.00,
+      });
+
+    expect([200, 201]).toContain(poRes.status);
+    expect(poRes.body).toHaveProperty('id');
+    expect(poRes.body.status).toBe('ISSUED');
   });
 });
