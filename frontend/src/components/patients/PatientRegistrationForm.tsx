@@ -76,20 +76,20 @@ export const PatientRegistrationForm: React.FC<PatientRegistrationFormProps> = (
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name *</label>
-          <input type="text" {...register('fullName')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Abebe Bikila" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="fullName">Full Name *</label>
+          <input type="text" id="fullName" {...register('fullName')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Abebe Bikila" />
           {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Phone Number *</label>
-          <input type="text" {...register('phoneNumber')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="+2519..." />
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="phoneNumber">Phone Number *</label>
+          <input type="text" id="phoneNumber" {...register('phoneNumber')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="+2519..." />
           {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Gender *</label>
-          <select {...register('gender')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="gender">Gender *</label>
+          <select id="gender" {...register('gender')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -99,35 +99,35 @@ export const PatientRegistrationForm: React.FC<PatientRegistrationFormProps> = (
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Date of Birth *</label>
-          <input type="date" {...register('dateOfBirth')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="dateOfBirth">Date of Birth *</label>
+          <input type="date" id="dateOfBirth" {...register('dateOfBirth')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
           {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-          <input type="email" {...register('email')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="patient@example.com" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="email">Email Address</label>
+          <input type="email" id="email" {...register('email')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="patient@example.com" />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Referral Source</label>
-          <input type="text" {...register('referralSource')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Walk-in, Doctor, Online..." />
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="referralSource">Referral Source</label>
+          <input type="text" id="referralSource" {...register('referralSource')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Walk-in, Doctor, Online..." />
         </div>
       </div>
 
       <div className="mt-5">
-        <label className="block text-sm font-semibold text-gray-700 mb-1">Residential Address</label>
-        <textarea {...register('address')} rows={2} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Street, City, Subcity..." />
+        <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="address">Residential Address</label>
+        <textarea id="address" {...register('address')} rows={2} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Street, City, Subcity..." />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Emergency Contact Name</label>
-          <input type="text" {...register('emergencyContactName')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="emergencyContactName">Emergency Contact Name</label>
+          <input type="text" id="emergencyContactName" {...register('emergencyContactName')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Emergency Contact Phone</label>
-          <input type="text" {...register('emergencyContactPhone')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          <label className="block text-sm font-semibold text-gray-700 mb-1" htmlFor="emergencyContactPhone">Emergency Contact Phone</label>
+          <input type="text" id="emergencyContactPhone" {...register('emergencyContactPhone')} className="w-full p-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
         </div>
       </div>
 

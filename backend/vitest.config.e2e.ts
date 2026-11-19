@@ -1,4 +1,6 @@
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.test' });
+dotenv.config();
 import swc from 'unplugin-swc';
 import { defineConfig } from 'vitest/config';
 

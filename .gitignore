@@ -24,3 +24,7 @@ Thumbs.db
 
 # MinIO / Docker persistent data local mounts
 infrastructure/docker/data/
+
+coverage/
+.env.test
+*-dump.txt

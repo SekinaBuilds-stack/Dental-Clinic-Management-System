@@ -77,13 +77,13 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5" htmlFor="patientId">
               <User size={14} className="text-blue-600" /> Patient UUID / ID
             </label>
             <input
               type="text"
               required
-              value={patientId}
+              id="patientId" value={patientId}
               onChange={(e) => setPatientId(e.target.value)}
               placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"
               className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -92,9 +92,9 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Doctor</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1" htmlFor="doctorId">Doctor</label>
               <select
-                value={doctorId}
+                id="doctorId" value={doctorId}
                 onChange={(e) => setDoctorId(e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               >
@@ -104,11 +104,11 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5" htmlFor="chairId">
                 <Armchair size={14} className="text-blue-600" /> Treatment Chair
               </label>
               <select
-                value={chairId}
+                id="chairId" value={chairId}
                 onChange={(e) => setChairId(e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               >
@@ -121,26 +121,26 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5" htmlFor="startTime">
                 <Clock size={14} className="text-blue-600" /> Start Time
               </label>
               <input
                 type="datetime-local"
                 required
-                value={startTime}
+                id="startTime" value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1 flex items-center gap-1.5" htmlFor="endTime">
                 <Clock size={14} className="text-blue-600" /> End Time
               </label>
               <input
                 type="datetime-local"
                 required
-                value={endTime}
+                id="endTime" value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
