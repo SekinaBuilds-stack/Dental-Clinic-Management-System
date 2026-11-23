@@ -8,7 +8,12 @@ import { TreatmentPlan } from './entities/treatment-plan.entity';
 import { TreatmentPlanItem } from './entities/treatment-plan-item.entity';
 import { ProcedureCatalog } from './entities/procedure-catalog.entity';
 import { ProcedurePrice } from './entities/procedure-price.entity';
-import { StorageModule } from '../storage/storage.module'; // <-- Added StorageModule import
+import { ClinicalNote } from './entities/clinical-note.entity';
+import { Prescription } from './entities/prescription.entity';
+import { LabOrder } from './entities/lab-order.entity';
+import { ImagingFile } from './entities/imaging-file.entity';
+import { Consent } from './entities/consent.entity';
+import { StorageModule } from '../storage/storage.module';
 
 @Module({
   imports: [
@@ -18,8 +23,14 @@ import { StorageModule } from '../storage/storage.module'; // <-- Added StorageM
       TreatmentPlanItem,
       ProcedureCatalog,
       ProcedurePrice,
+      // FR-EMR-003 to FR-EMR-008: tables the service reaches by name
+      ClinicalNote,
+      Prescription,
+      LabOrder,
+      ImagingFile,
+      Consent,
     ]),
-    StorageModule, // <-- Included in imports
+    StorageModule,
   ],
   controllers: [EmrController],
   providers: [EmrService],
