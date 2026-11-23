@@ -57,7 +57,7 @@ export const EstimateGenerator: React.FC<EstimateGeneratorProps> = ({ patientId 
           <FileSpreadsheet size={22} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Treatment Estimates Engine (`TR-BIL-003`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Treatment Estimates Engine</h2>
           <p className="text-xs text-gray-500">Generate and review itemized cost estimates from treatment plans</p>
         </div>
       </div>
@@ -85,7 +85,7 @@ export const EstimateGenerator: React.FC<EstimateGeneratorProps> = ({ patientId 
       {/* Estimates History */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
-          <History size={14} /> Estimate History (`TR-BIL-004`)
+          <History size={14} /> Estimate History
         </h3>
         {estimates.length === 0 ? (
           <p className="text-xs text-gray-400 py-4 text-center">No estimates generated yet.</p>

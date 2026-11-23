@@ -32,7 +32,7 @@ export const DayBookView: React.FC = () => {
             <Calendar size={22} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Day-Book Reconciliation (`TR-BIL-005`)</h2>
+            <h2 className="text-xl font-bold text-gray-900">Day-Book Reconciliation</h2>
             <p className="text-xs text-gray-500">Daily financial ledger and cash collection summary</p>
           </div>
         </div>

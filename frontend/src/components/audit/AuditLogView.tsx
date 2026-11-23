@@ -31,7 +31,7 @@ export function AuditLogView() {
       <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-gray-900">System Audit Trail & Security Logs</h1>
-          <p className="text-xs text-gray-500">Immutable record of all critical modifications and state updates (TR-COR-005)</p>
+          <p className="text-xs text-gray-500">Immutable record of all critical modifications and state updates</p>
         </div>
         <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-2xl">
           <ShieldCheck size={16} /> Global Interceptor Active

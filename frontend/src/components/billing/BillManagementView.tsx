@@ -62,7 +62,7 @@ export const BillManagementView: React.FC<BillManagementViewProps> = ({ patientI
             <DollarSign size={22} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Bill Management & Checkout (`TR-BIL-002`)</h2>
+            <h2 className="text-xl font-bold text-gray-900">Bill Management & Checkout</h2>
             <p className="text-xs text-gray-500">View patient billing status and process secure settlements</p>
           </div>
         </div>
