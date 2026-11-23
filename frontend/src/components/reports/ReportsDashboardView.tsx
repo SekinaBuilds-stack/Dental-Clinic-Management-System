@@ -40,7 +40,7 @@ export function ReportsDashboardView() {
         {/* Collections Card */}
         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-gray-900">Daily Collections (TR-REP-001)</h2>
+            <h2 className="text-sm font-bold text-gray-900">Daily Collections</h2>
             <DollarSign className="text-emerald-600" size={20} />
           </div>
           <div className="text-2xl font-extrabold text-gray-900">${collections?.totalCollected?.toFixed(2) || '0.00'}</div>
@@ -50,7 +50,7 @@ export function ReportsDashboardView() {
         {/* Doctor Production Card */}
         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-gray-900">Doctor Production (TR-REP-002)</h2>
+            <h2 className="text-sm font-bold text-gray-900">Doctor Production</h2>
             <Users className="text-blue-600" size={20} />
           </div>
           <div className="text-2xl font-extrabold text-gray-900">${production?.totalProduction?.toFixed(2) || '0.00'}</div>
@@ -62,7 +62,7 @@ export function ReportsDashboardView() {
         {/* Treatment Analysis */}
         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-gray-900">Treatment Volume Analysis (TR-REP-003)</h2>
+            <h2 className="text-sm font-bold text-gray-900">Treatment Volume Analysis</h2>
             <Activity className="text-purple-600" size={20} />
           </div>
           <table className="w-full text-left text-xs">
@@ -88,7 +88,7 @@ export function ReportsDashboardView() {
         {/* Receivables Aging */}
         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-gray-900">Receivables Aging (TR-REP-005)</h2>
+            <h2 className="text-sm font-bold text-gray-900">Receivables Aging</h2>
             <Clock className="text-amber-600" size={20} />
           </div>
           <table className="w-full text-left text-xs">

@@ -24,7 +24,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     });
 
     newSocket.on('connect', () => {
-      console.log('Real-Time Socket.IO connected (`TR-APT-007`)');
+      console.log('Real-Time Socket.IO connected');
       setIsConnected(true);
     });
 

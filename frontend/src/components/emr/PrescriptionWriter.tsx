@@ -71,7 +71,7 @@ export const PrescriptionWriter: React.FC<PrescriptionWriterProps> = ({ patientI
             <Pill size={22} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Prescription Writer (`TR-EMR-004`)</h2>
+            <h2 className="text-xl font-bold text-gray-900">Prescription Writer</h2>
             <p className="text-xs text-gray-500">Configurable drug dispensing & dosage instructions</p>
           </div>
         </div>

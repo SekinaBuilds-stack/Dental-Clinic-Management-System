@@ -76,7 +76,7 @@ export function ProcurementWorkflowView() {
       <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-gray-900">Procurement Pipeline (Requisition → RFQ → PO)</h1>
-          <p className="text-xs text-gray-500">Manage low-stock replenishment requisitions and purchase orders (TR-INV-003)</p>
+          <p className="text-xs text-gray-500">Manage low-stock replenishment requisitions and purchase orders</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}

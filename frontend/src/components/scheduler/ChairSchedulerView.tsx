@@ -70,7 +70,7 @@ export const ChairSchedulerView: React.FC = () => {
             <Armchair className="text-emerald-600" size={28} /> Treatment Chair Schedule
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Real-time chair utilization and multi-chair operational monitoring (`TR-APT-002`).
+            Real-time chair utilization and multi-chair operational monitoring.
           </p>
         </div>
 

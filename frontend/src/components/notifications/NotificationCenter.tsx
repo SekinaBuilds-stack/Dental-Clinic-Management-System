@@ -49,7 +49,7 @@ export function NotificationCenter() {
       <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-gray-900">System Notification Center</h1>
-          <p className="text-xs text-gray-500">Automated alerts for appointment reminders, recalls, and inventory expiry scans (TR-COR-006)</p>
+          <p className="text-xs text-gray-500">Automated alerts for appointment reminders, recalls, and inventory expiry scans</p>
         </div>
         <div className="flex items-center gap-2 text-xs font-bold text-purple-600 bg-purple-50 px-3 py-1.5 rounded-2xl">
           <Bell size={16} /> BullMQ + Redis Active

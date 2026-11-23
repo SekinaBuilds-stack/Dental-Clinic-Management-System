@@ -62,7 +62,7 @@ export const ImagingUploader: React.FC<ImagingUploaderProps> = ({ patientId, onU
           <ImageIcon size={22} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Imaging & X-Ray Attachments (`TR-EMR-007`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Imaging & X-Ray Attachments</h2>
           <p className="text-xs text-gray-500">Secure MinIO S3 object storage for dental radiographs and photos</p>
         </div>
       </div>

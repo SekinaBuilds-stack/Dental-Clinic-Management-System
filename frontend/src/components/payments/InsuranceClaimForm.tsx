@@ -69,7 +69,7 @@ export const InsuranceClaimForm: React.FC<InsuranceClaimFormProps> = ({ patientI
           <Shield size={22} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Insurance Claim & Co-Pay (`TR-PAY-004`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Insurance Claim & Co-Pay</h2>
           <p className="text-xs text-gray-500">Submit claims and compute patient co-payment rules</p>
         </div>
       </div>
@@ -132,7 +132,7 @@ export const InsuranceClaimForm: React.FC<InsuranceClaimFormProps> = ({ patientI
 
         {copayResult && (
           <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100 space-y-1 text-xs text-blue-900 font-medium">
-            <p className="font-bold flex items-center gap-1.5"><Calculator size={14} /> Co-Pay Calculation (`TR-PAY-006`):</p>
+            <p className="font-bold flex items-center gap-1.5"><Calculator size={14} /> Co-Pay Calculation:</p>
             <p>Insurance Coverage: <span className="font-mono font-bold">${copayResult.insuranceCoverage}</span></p>
             <p>Patient Co-Pay Due: <span className="font-mono font-extrabold text-blue-700">${copayResult.patientCopay}</span></p>
           </div>

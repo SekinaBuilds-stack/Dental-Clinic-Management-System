@@ -70,7 +70,7 @@ export function StockAdjustmentModal() {
       <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
         <div>
           <h2 className="text-sm font-bold text-gray-900">Stock Adjustments & Wastage Approvals</h2>
-          <p className="text-xs text-gray-500">Manager-approved stock discrepancies and wastage logs (TR-INV-008)</p>
+          <p className="text-xs text-gray-500">Manager-approved stock discrepancies and wastage logs</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}

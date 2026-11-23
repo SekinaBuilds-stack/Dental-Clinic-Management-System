@@ -65,7 +65,7 @@ export const WaitlistModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900">Clinic Waitlist Management</h2>
-              <p className="text-xs text-gray-500">Reassign cancelled slots (`TR-APT-006`)[cite: 3, 18]</p>
+              <p className="text-xs text-gray-500">Reassign cancelled slots</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 rounded-xl">

@@ -55,7 +55,7 @@ export const ClinicalNotesEditor: React.FC<ClinicalNotesEditorProps> = ({ patien
           <Stethoscope size={22} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Clinical Progress Notes (`TR-EMR-003`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Clinical Progress Notes</h2>
           <p className="text-xs text-gray-500">Record visit diagnoses, observations, and procedures</p>
         </div>
       </div>

@@ -53,7 +53,7 @@ export const CheckoutTerminal: React.FC<CheckoutTerminalProps> = ({ billId, tota
           <CreditCard size={22} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Cashier Checkout Terminal (`TR-PAY-002`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Cashier Checkout Terminal</h2>
           <p className="text-xs text-gray-500">Process multi-method bill settlements & generate receipts</p>
         </div>
       </div>

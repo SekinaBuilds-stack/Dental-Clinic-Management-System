@@ -108,7 +108,7 @@ export const DoctorSchedulerView: React.FC = () => {
             </div>
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            Manage doctor availability, view active bookings, and initiate time-slot allocations (`TR-APT-001`).
+            Manage doctor availability, view active bookings, and initiate time-slot allocations.
           </p>
         </div>
 

@@ -59,7 +59,7 @@ export const DigitalConsentPad: React.FC<DigitalConsentPadProps> = ({ patientId,
           <PenTool size={22} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Digital Consent Pad (`TR-EMR-008`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Digital Consent Pad</h2>
           <p className="text-xs text-gray-500">Capture legally binding patient consent and signatures</p>
         </div>
       </div>

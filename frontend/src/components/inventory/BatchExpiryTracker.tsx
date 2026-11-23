@@ -42,7 +42,7 @@ export function BatchExpiryTracker() {
       <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold text-gray-900">Batch & Expiry Tracker</h1>
-          <p className="text-xs text-gray-500">Monitor active stock batches and shelf life expiration dates (TR-INV-005)</p>
+          <p className="text-xs text-gray-500">Monitor active stock batches and shelf life expiration dates</p>
         </div>
       </div>
 

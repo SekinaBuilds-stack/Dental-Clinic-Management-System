@@ -93,7 +93,7 @@ export const TreatmentPlanBuilder: React.FC<TreatmentPlanBuilderProps> = ({ pati
             <FileText size={22} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Treatment Plan Builder (`TR-EMR-001`)</h2>
+            <h2 className="text-xl font-bold text-gray-900">Treatment Plan Builder</h2>
             <p className="text-xs text-gray-500">Design multi-stage care workflows and estimates</p>
           </div>
         </div>

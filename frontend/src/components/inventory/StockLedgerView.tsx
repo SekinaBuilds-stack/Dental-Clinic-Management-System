@@ -27,7 +27,7 @@ export function StockLedgerView() {
     <div className="space-y-6">
       <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm">
         <h1 className="text-lg font-bold text-gray-900">Stock Movement Audit Ledger</h1>
-        <p className="text-xs text-gray-500">Immutable audit history of all inbound GRNs and outbound stock transactions (TR-INV-010)</p>
+        <p className="text-xs text-gray-500">Immutable audit history of all inbound GRNs and outbound stock transactions</p>
       </div>
 
       <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">

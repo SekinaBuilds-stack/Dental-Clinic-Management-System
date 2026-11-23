@@ -70,7 +70,7 @@ export const PatientRegistrationForm: React.FC<PatientRegistrationFormProps> = (
         </div>
         <div>
           <h2 className="text-xl font-bold text-gray-900">New Patient Registration</h2>
-          <p className="text-xs text-gray-500">Capture demographics, contact details, and medical alerts (TR-PAT-002).</p>
+          <p className="text-xs text-gray-500">Capture demographics, contact details, and medical alerts.</p>
         </div>
       </div>
       
@@ -134,7 +134,7 @@ export const PatientRegistrationForm: React.FC<PatientRegistrationFormProps> = (
       <div className="mt-5 bg-blue-50/50 p-4 rounded-xl border border-blue-100 flex items-center space-x-3">
         <input type="checkbox" {...register('isPreRegistered')} id="preReg" className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
         <label htmlFor="preReg" className="text-sm font-medium text-blue-900 cursor-pointer">
-          Mark as Pre-registered (Walk-in or phone booking before full file creation - TR-PAT-001)
+          Mark as Pre-registered (Walk-in or phone booking before full file creation)
         </label>
       </div>
 
@@ -143,7 +143,7 @@ export const PatientRegistrationForm: React.FC<PatientRegistrationFormProps> = (
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
             <AlertCircle size={18} className="text-red-500" />
-            <h3 className="text-md font-bold text-gray-900">Medical Alerts & Allergies (TR-PAT-003)</h3>
+            <h3 className="text-md font-bold text-gray-900">Medical Alerts & Allergies</h3>
           </div>
           <button
             type="button"

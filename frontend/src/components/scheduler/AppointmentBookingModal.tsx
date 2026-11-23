@@ -45,7 +45,7 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
       onSuccess();
     } catch (err: any) {
       console.error('Failed to book appointment', err);
-      setError(err.response?.data?.message || 'Conflict detected: Doctor or Chair already booked during this time (TR-APT-003).');
+      setError(err.response?.data?.message || 'Conflict detected: Doctor or Chair already booked during this time.');
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ export const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = (
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900">Book Appointment</h2>
-              <p className="text-xs text-gray-500">Atomic conflict detection enforced (`TR-APT-003`)</p>
+              <p className="text-xs text-gray-500">Atomic conflict detection enforced</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 rounded-xl">

@@ -37,7 +37,7 @@ export function ChairsideConsumptionWidget() {
         body: JSON.stringify({ treatmentId, inventoryItemId, quantityConsumed: Number(quantityConsumed) })
       });
       if (!res.ok) throw new Error('Failed to record chairside consumption');
-      setSuccessMsg('Material consumption recorded and inventory deducted atomically (TR-INV-009)!');
+      setSuccessMsg('Material consumption recorded and inventory deducted atomically!');
       setTreatmentId('');
       setQuantityConsumed(1);
     } catch (err: any) {
@@ -50,7 +50,7 @@ export function ChairsideConsumptionWidget() {
       <div className="flex items-center justify-between border-b pb-4">
         <div>
           <h2 className="text-sm font-bold text-gray-900">Chairside Material Consumption Widget</h2>
-          <p className="text-xs text-gray-500">Automatically deduct clinical consumables upon procedure completion (TR-INV-009)</p>
+          <p className="text-xs text-gray-500">Automatically deduct clinical consumables upon procedure completion</p>
         </div>
         <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 rounded-xl font-bold text-xs">
           <Scissors size={14} /> Chairside EMR Link

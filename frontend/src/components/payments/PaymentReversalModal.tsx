@@ -45,7 +45,7 @@ export const PaymentReversalModal: React.FC<PaymentReversalModalProps> = ({ paym
           <RotateCcw size={22} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Payment Reversal (`TR-PAY-003`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Payment Reversal</h2>
           <p className="text-xs text-gray-500">Manager-approved reversal with immutable audit trail</p>
         </div>
       </div>

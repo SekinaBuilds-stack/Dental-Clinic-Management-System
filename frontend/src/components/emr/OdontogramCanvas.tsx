@@ -110,7 +110,7 @@ export const OdontogramCanvas: React.FC<OdontogramCanvasProps> = ({ patientId, o
       {/* Header */}
       <div className="flex items-center justify-between border-b pb-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Interactive Odontogram Chart (`TR-EMR-002`)</h2>
+          <h2 className="text-xl font-bold text-gray-900">Interactive Odontogram Chart</h2>
           <p className="text-xs text-gray-500">FDI Numbering Standard • Click teeth to apply clinical conditions</p>
         </div>
         <div className="flex items-center gap-2">
