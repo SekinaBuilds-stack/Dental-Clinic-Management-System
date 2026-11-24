@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 // Feature & Utility Modules
+import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
 import { PatientsModule } from './patients/patients.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
@@ -75,6 +76,7 @@ import { PaymentPlan } from './payments/entities/payment-plan.entity';
     InventoryModule,
     RetailModule,
     NotificationsModule, // <-- Ensure this module is imported
+    AuditModule, // <-- Ensure this module is imported
   ],
   controllers: [AppController],
   providers: [AppService],
