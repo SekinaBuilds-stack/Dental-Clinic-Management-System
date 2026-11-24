@@ -3,6 +3,7 @@ import { AuditService } from './audit.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 
+// The global prefix "api/v1" is set in main.ts, so it must NOT be repeated here.
 @Controller('audit-logs')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class AuditController {

@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { CreateGrnDto } from './dto/create-grn.dto';
 
+// The global prefix "api/v1" is set in main.ts, so it must NOT be repeated here.
 @Controller('inventory')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class InventoryController {
