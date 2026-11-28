@@ -1,53 +1,30 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly users: UsersService,
+  ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
-    // Mock user for Day 5 testing (will be replaced by UsersService / database lookup later)
-    const mockUser = {
-      id: 1,
-      email: 'admin@dcms.com',
-      // Hash of 'Password123!' generated via bcrypt
-      passwordHash: '$2b$10$xa.Rf/9ibIKYXCqFNffXTeWAooPByl0jpli8/iAcVKJuOxcJfU2Sa', 
-     role: 'Clinic Manager / Admin',
- permissions: [
-  // patients
-  'patients:create', 'patients:read', 'patients:update',
-  // scheduler
-  'appointments:create', 'appointments:read', 'appointments:update', 'appointments:manage',
-  'waitlist:manage',
-  // clinical
-  'emr:read', 'emr:write', 'lab:manage',
-  // billing, payments, insurance
-  'billing:read', 'billing:write', 'billing:manage',
-  'payments:read', 'payments:write', 'payments:process', 'payments:reverse',
-  'insurance:read', 'insurance:manage',
-  // retail
-  'retail:manage', 'retail:return', 'retail:pos',
-  // other
-  'inventory:manage', 'reports:view', 'admin:users',
-],
-    };
-
-    if (email === mockUser.email) {
-      const isMatch = await bcrypt.compare(pass, mockUser.passwordHash);
-      if (isMatch) {
-        const { passwordHash, ...result } = mockUser;
-        return result;
-      }
-    }
-    return null;
+  /** Checks the password only. Returns the user record (any status) or null. */
+  validateUser(email: string, pass: string) {
+    return this.users.verifyPassword(email, pass);
   }
 
-  async login(user: any) {
-    const payload = { email: user.email, sub: user.id, role: user.role, permissions: user.permissions };
-    return {
-      accessToken: this.jwtService.sign(payload),
-      user,
-    };
+  /** Issues a token, but only for approved, active accounts. */
+  async login(user: NonNullable<Awaited<ReturnType<UsersService['verifyPassword']>>>) {
+    if (user.status === 'PENDING') {
+      throw new ForbiddenException('Your account is waiting for approval. An administrator must assign you a role first.');
+    }
+    if (user.status === 'DEACTIVATED') {
+      throw new ForbiddenException('This account has been deactivated. Please contact the clinic administrator.');
+    }
+    await this.users.touchLogin(user);
+    const safe = this.users.toSafe(user);
+    const payload = { email: user.email, sub: user.id, role: user.role };
+    return { accessToken: this.jwtService.sign(payload), user: safe };
   }
 }

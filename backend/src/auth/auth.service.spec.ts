@@ -1,44 +1,46 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { ForbiddenException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
 
-describe('AuthService (FR-CORE-001)', () => {
+describe('AuthService', () => {
   let service: AuthService;
-  const mockJwtService = {
-    sign: vi.fn().mockReturnValue('mocked-jwt-token'),
-  };
+  let jwt: { sign: ReturnType<typeof vi.fn> };
+  let users: any;
+
+  const active = { id: 'u1', email: 'a@x.com', role: 'Cashier / Billing Officer', status: 'ACTIVE' };
 
   beforeEach(() => {
-    mockJwtService.sign.mockClear();
-    service = new AuthService(mockJwtService as unknown as JwtService);
+    jwt = { sign: vi.fn(() => 'signed-token') };
+    users = {
+      verifyPassword: vi.fn(),
+      touchLogin: vi.fn(async () => undefined),
+      toSafe: vi.fn((u: any) => ({ ...u, permissions: ['billing:read'] })),
+    };
+    service = new AuthService(jwt as any, users);
   });
 
-  it('validateUser returns the user (without passwordHash) on valid credentials', async () => {
-    const user = await service.validateUser('admin@dcms.com', 'Password123!');
-
-    expect(user).not.toBeNull();
-    expect(user.email).toBe('admin@dcms.com');
-    expect(user).not.toHaveProperty('passwordHash');
+  it('delegates the password check to the users service', async () => {
+    users.verifyPassword.mockResolvedValue(active);
+    await expect(service.validateUser('a@x.com', 'pw')).resolves.toBe(active);
+    users.verifyPassword.mockResolvedValue(null);
+    await expect(service.validateUser('a@x.com', 'bad')).resolves.toBeNull();
   });
 
-  it('validateUser returns null on a wrong password', async () => {
-    const user = await service.validateUser('admin@dcms.com', 'WrongPassword');
-    expect(user).toBeNull();
+  it('signs a token and returns the user with permissions for an active account', async () => {
+    const result = await service.login(active as any);
+    expect(jwt.sign).toHaveBeenCalledWith({ email: 'a@x.com', sub: 'u1', role: 'Cashier / Billing Officer' });
+    expect(result.accessToken).toBe('signed-token');
+    expect(result.user.permissions).toEqual(['billing:read']);
+    expect(users.touchLogin).toHaveBeenCalled();
   });
 
-  it('validateUser returns null for an unknown email', async () => {
-    const user = await service.validateUser('nobody@dcms.com', 'Password123!');
-    expect(user).toBeNull();
+  it('refuses to sign in a pending account', async () => {
+    await expect(service.login({ ...active, status: 'PENDING', role: null } as any)).rejects.toThrow(/waiting for approval/);
+    expect(jwt.sign).not.toHaveBeenCalled();
   });
 
-  it('login returns an access token and embeds role and permissions in the payload', async () => {
-    const user = { id: 1, email: 'admin@dcms.com', role: 'Clinic Manager / Admin', permissions: ['patients:read'] };
-
-    const result = await service.login(user);
-
-    expect(result.accessToken).toBe('mocked-jwt-token');
-    expect(mockJwtService.sign).toHaveBeenCalledWith(
-      expect.objectContaining({ sub: 1, email: 'admin@dcms.com', permissions: ['patients:read'] }),
-    );
+  it('refuses to sign in a deactivated account', async () => {
+    await expect(service.login({ ...active, status: 'DEACTIVATED' } as any)).rejects.toThrow(ForbiddenException);
+    expect(jwt.sign).not.toHaveBeenCalled();
   });
 });

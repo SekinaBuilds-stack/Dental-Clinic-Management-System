@@ -2,9 +2,11 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 
 @Controller('reports')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
+@RequirePermissions('reports:view')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 

@@ -20,7 +20,7 @@ export const PatientManagementView: React.FC = () => {
           <div>
             <h1 className="text-2xl font-black text-gray-900">Patient Management & Front Desk</h1>
             <p className="text-xs text-gray-500 flex items-center gap-1.5 mt-0.5">
-              <ShieldCheck size={14} className="text-emerald-600" /> SRS Compliant (TR-PAT-001 through TR-PAT-005)
+              <ShieldCheck size={14} className="text-emerald-600" /> SRS Compliant
             </p>
           </div>
         </div>

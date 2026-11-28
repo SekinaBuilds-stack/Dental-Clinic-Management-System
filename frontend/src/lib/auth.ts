@@ -2,10 +2,11 @@
 // key "token" while services/api.ts reads "access_token", so we write both.
 const TOKEN_KEYS = ['token', 'access_token'] as const;
 
-export function setSession(token: string, role: string) {
+export function setSession(token: string, role: string, permissions: string[] = []) {
   try {
     TOKEN_KEYS.forEach((k) => localStorage.setItem(k, token));
     localStorage.setItem('role', role);
+    localStorage.setItem('permissions', JSON.stringify(permissions));
   } catch {
     /* storage unavailable: the session simply will not persist */
   }
@@ -13,7 +14,7 @@ export function setSession(token: string, role: string) {
 
 export function clearSession() {
   try {
-    [...TOKEN_KEYS, 'role', 'selectedPatient'].forEach((k) => localStorage.removeItem(k));
+    [...TOKEN_KEYS, 'role', 'permissions', 'selectedPatient'].forEach((k) => localStorage.removeItem(k));
   } catch {
     /* ignore */
   }
@@ -33,6 +34,20 @@ export function getRole(): string {
   } catch {
     return '';
   }
+}
+
+export function getPermissions(): string[] {
+  try {
+    const raw = JSON.parse(localStorage.getItem('permissions') ?? '[]');
+    return Array.isArray(raw) ? raw.map(String) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** True when the signed-in user's role grants this permission. */
+export function can(permission: string): boolean {
+  return getPermissions().includes(permission);
 }
 
 export function isAuthenticated(): boolean {

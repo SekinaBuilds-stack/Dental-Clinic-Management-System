@@ -29,6 +29,8 @@ import {
   Truck,
   ShoppingCart,
   AlertTriangle,
+  ArrowLeft,
+  UserCog,
 } from 'lucide-react';
 
 // --- AUTH / SHARED ---
@@ -38,7 +40,12 @@ import { PatientProvider, usePatient } from './context/PatientContext';
 import { RequirePatient } from './components/common/RequirePatient';
 import { RecordPrompt } from './components/common/RecordPrompt';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
-import { clearSession, currentUserId, getRole, isAuthenticated } from './lib/auth';
+import api from './services/api';
+import './lib/sessionGuard';
+import { canAccess } from './lib/access';
+import { clearSession, currentUserId, getRole, getToken, isAuthenticated, setSession } from './lib/auth';
+import { RegisterView } from './components/auth/RegisterView';
+import { UsersAdminView } from './components/admin/UsersAdminView';
 
 // --- INVENTORY / PROCUREMENT / RETAIL / REPORTS / AUDIT / NOTIFICATIONS ---
 import { InventoryMasterView } from './components/inventory/InventoryMasterView';
@@ -161,6 +168,10 @@ const NAV: NavGroup[] = [
       { to: '/audit', label: 'Audit Log', icon: ShieldCheck },
     ],
   },
+  {
+    title: 'Administration',
+    items: [{ to: '/admin/users', label: 'User Management', icon: UserCog }],
+  },
 ];
 
 const ALL_ITEMS = NAV.flatMap((g) => g.items);
@@ -263,6 +274,13 @@ const MODULES: ModuleCard[] = [
       { to: '/audit', label: 'Audit log' },
     ],
   },
+  {
+    title: 'Administration',
+    description: 'Approve new sign-ups, assign roles, and deactivate accounts.',
+    icon: UserCog,
+    tone: 'blue',
+    links: [{ to: '/admin/users', label: 'User management' }],
+  },
 ];
 
 const QUICK_ACTIONS: { to: string; label: string; icon: Icon }[] = [
@@ -274,6 +292,9 @@ const QUICK_ACTIONS: { to: string; label: string; icon: Icon }[] = [
 
 // --- HOME / DASHBOARD OVERVIEW ---
 function DashboardHome() {
+  // Show only what the signed-in role may open.
+  const quick = QUICK_ACTIONS.filter((a) => canAccess(a.to));
+  const modules = MODULES.map((m) => ({ ...m, links: m.links.filter((l) => canAccess(l.to)) })).filter((m) => m.links.length > 0);
   return (
     <div className="space-y-8">
       <section className="rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-700 p-8 text-white shadow-lg">
@@ -282,7 +303,7 @@ function DashboardHome() {
           Dental Clinic Management System — synchronized with billing, EMR, patient records, payments, and schedule control.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          {QUICK_ACTIONS.map(({ to, label, icon: ActionIcon }) => (
+          {quick.map(({ to, label, icon: ActionIcon }) => (
             <Link
               key={to}
               to={to}
@@ -299,7 +320,7 @@ function DashboardHome() {
           Modules
         </h2>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {MODULES.map(({ title, description, icon: ModuleIcon, tone, links }) => {
+          {modules.map(({ title, description, icon: ModuleIcon, tone, links }) => {
             const t = TONES[tone];
             return (
               <article
@@ -355,7 +376,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </div>
 
       <nav aria-label="Main" className="flex-1 space-y-6 overflow-y-auto p-4">
-        {NAV.map((group) => (
+        {NAV.map((g) => ({ ...g, items: g.items.filter((i) => canAccess(i.to)) }))
+          .filter((g) => g.items.length > 0)
+          .map((group) => (
           <div key={group.title}>
             <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-gray-400">{group.title}</p>
             <div className="space-y-1">
@@ -378,7 +401,48 @@ function Layout() {
   const navigate = useNavigate();
   const { patient, select, clear } = usePatient();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Desktop sidebar can be hidden to view a page full-width; the choice is remembered.
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('sidebarOpen') !== 'false';
+    } catch {
+      return true;
+    }
+  });
+  const toggleSidebar = () => {
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      setSidebarOpen((open) => {
+        try {
+          localStorage.setItem('sidebarOpen', String(!open));
+        } catch {
+          /* ignore */
+        }
+        return !open;
+      });
+    } else {
+      setDrawerOpen(true);
+    }
+  };
+  const goBack = () => (location.key === 'default' ? navigate('/') : navigate(-1));
   const role = getRole();
+  const [, setTick] = useState(0);
+
+  // Pick up role changes made by an administrator: re-read who I am whenever I move to another page.
+  useEffect(() => {
+    let live = true;
+    api
+      .get('/api/v1/auth/me')
+      .then((res) => {
+        if (!live) return;
+        setSession(getToken(), String(res.data?.role ?? ''), res.data?.permissions ?? []);
+        setTick((t) => t + 1);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [location.pathname]);
+  const allowed = canAccess(location.pathname);
 
   const logout = () => {
     clearSession();
@@ -398,9 +462,11 @@ function Layout() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-gray-200 bg-white lg:flex">
-        <SidebarContent />
-      </aside>
+      {sidebarOpen && (
+        <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-gray-200 bg-white lg:flex">
+          <SidebarContent />
+        </aside>
+      )}
 
       {/* Mobile drawer */}
       {drawerOpen && (
@@ -423,12 +489,23 @@ function Layout() {
       <main className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-10 flex h-16 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur sm:px-8">
           <button
-            aria-label="Open menu"
-            onClick={() => setDrawerOpen(true)}
-            className="rounded-xl p-2 text-gray-600 hover:bg-gray-100 lg:hidden"
+            aria-label={sidebarOpen ? 'Hide menu' : 'Show menu'}
+            title={sidebarOpen ? 'Hide menu' : 'Show menu'}
+            onClick={toggleSidebar}
+            className="rounded-xl p-2 text-gray-600 hover:bg-gray-100"
           >
             <Menu size={20} />
           </button>
+          {location.pathname !== '/' && (
+            <button
+              aria-label="Go back"
+              title="Go back"
+              onClick={goBack}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-100"
+            >
+              <ArrowLeft size={15} /> <span className="hidden sm:inline">Back</span>
+            </button>
+          )}
           <div className="min-w-0">
             <p className="hidden text-[10px] font-bold uppercase tracking-wider text-gray-400 sm:block">
               Dental Clinic Management System
@@ -457,6 +534,9 @@ function Layout() {
 
         <div className="mx-auto w-full max-w-7xl p-4 sm:p-8">
           <ErrorBoundary key={location.pathname}>
+          {!allowed ? (
+            <NoAccess />
+          ) : (
           <Routes>
             <Route path="/" element={<DashboardHome />} />
 
@@ -537,10 +617,27 @@ function Layout() {
                 </div>
               }
             />
+            <Route path="/admin/users" element={<UsersAdminView />} />
           </Routes>
+          )}
           </ErrorBoundary>
         </div>
       </main>
+    </div>
+  );
+}
+
+function NoAccess() {
+  return (
+    <div className="mx-auto max-w-md rounded-3xl border border-gray-100 bg-white p-10 text-center shadow-sm">
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+        <ShieldAlert size={26} />
+      </div>
+      <h2 className="text-lg font-bold text-gray-900">You don't have access to this page</h2>
+      <p className="mt-2 text-sm text-gray-500">Your role does not include it. If you think this is a mistake, ask a clinic administrator.</p>
+      <Link to="/" className="mt-6 inline-block rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-700">
+        Back to dashboard
+      </Link>
     </div>
   );
 }
@@ -591,12 +688,18 @@ function LoginRoute() {
   return <LoginView onLoginSuccess={() => navigate('/', { replace: true })} />;
 }
 
+function RegisterRoute() {
+  if (isAuthenticated()) return <Navigate to="/" replace />;
+  return <RegisterView />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <PatientProvider>
         <Routes>
           <Route path="/login" element={<LoginRoute />} />
+          <Route path="/register" element={<RegisterRoute />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/*" element={<Layout />} />
           </Route>

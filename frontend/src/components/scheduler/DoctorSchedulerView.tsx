@@ -74,7 +74,7 @@ export const DoctorSchedulerView: React.FC = () => {
     }
   }, [selectedDoctor, selectedDate]);
 
-  // TR-APT-007: Listen for real-time WebSocket events to refresh grid instantly
+  // : Listen for real-time WebSocket events to refresh grid instantly
   useEffect(() => {
     if (!socket) return;
 
